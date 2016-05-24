@@ -15,6 +15,14 @@
      * Get an `Html` object by calling the built-in Play welcome
      * template and passing a `String` message.
      *@
-    @play20.welcome(message, style = "Java")
+    @* @play20.welcome(message, style = "Java") *@
+
+    <form action="@routes.SwanController.swanSongFormService()" method="post">
+
+     <input type="text" name="name" value="self@@movement:x{ANY,1000}" size="35"/>
+
+     <button> Check SWAN Song</button>
+
+    </form>
 
 }

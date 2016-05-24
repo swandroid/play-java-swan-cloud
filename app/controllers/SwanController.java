@@ -11,7 +11,7 @@ import swansong.ExpressionFactory;
  */
 public class SwanController extends Controller{
 
-    public Result swanSongService(){
+    public Result swanSongJSONService(){
 
         JsonNode json = request().body().asJson();
 
@@ -39,6 +39,25 @@ public class SwanController extends Controller{
 
 
     }
+
+
+    public Result swanSongFormService(){
+
+        String swansong = request().body().asFormUrlEncoded().get("name")[0];
+
+            try {
+
+                Expression expression = ExpressionFactory.parse(swansong);
+
+                return ok("Good Expression: "+ expression.toParseString());
+
+            } catch (Throwable t) {
+                return ok("Bad expression:" + t);
+            }
+
+
+    }
+
 
 
 }
