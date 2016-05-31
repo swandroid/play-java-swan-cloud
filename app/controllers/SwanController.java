@@ -1,14 +1,28 @@
 package controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.PushNotificationData;
 import play.libs.Json;
+import play.libs.ws.WSClient;
+import play.libs.ws.WSRequest;
+import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 import swansong.*;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.concurrent.CompletionStage;
+
+import static credentials.Firebase.APPLICATION_API_KEY;
+import static credentials.Firebase.FIREBASE_URL;
+import static credentials.Firebase.PHONE_TOKEN;
+
 
 /**
  * Created by Roshan Bharath Das on 24/05/16.
@@ -44,6 +58,32 @@ public class SwanController extends Controller{
 
     }
 
+
+    @Inject WSClient ws;
+    public Result testWebService(){
+
+
+        WSRequest request = ws.url(FIREBASE_URL);
+        PushNotificationData pushNotificationData = new PushNotificationData();
+        pushNotificationData.to = PHONE_TOKEN;
+
+        pushNotificationData.data = new PushNotificationData.Data();
+        pushNotificationData.data.key = "value";
+
+
+
+        JsonNode pushNotificationJsonData = Json.toJson(pushNotificationData);
+
+        System.out.println(pushNotificationJsonData.toString());
+
+
+        request.setHeader("Authorization","key="+APPLICATION_API_KEY);
+        CompletionStage<JsonNode> jsonPromise = request.post(pushNotificationJsonData).thenApply(WSResponse::asJson);
+
+
+
+        return ok(jsonPromise.toString());
+    }
 
     public void initialize (String id, Expression expression){
             //System.out.println("initialize-start");
@@ -150,11 +190,11 @@ public class SwanController extends Controller{
 
                 for(SensorValueExpression sensorValueExpression:sensorValueExpressionList){
                     ObjectNode result = Json.newObject();
-                    result.put("Location",sensorValueExpression.getLocation());
-                    result.put("Entityid",sensorValueExpression.getEntity());
-                    result.put("Valuepath",sensorValueExpression.getValuePath());
-                    result.put("History_Reduction_Mode",sensorValueExpression.getHistoryReductionMode().toParseString());
-                    result.put("History_Length",sensorValueExpression.getHistoryLength());
+                    result.put("location",sensorValueExpression.getLocation());
+                    result.put("entityid",sensorValueExpression.getEntity());
+                    result.put("valuepath",sensorValueExpression.getValuePath());
+                    result.put("historyreductionmode",sensorValueExpression.getHistoryReductionMode().toParseString());
+                    result.put("historylength",sensorValueExpression.getHistoryLength());
 
                     resultlist.add(result);
 

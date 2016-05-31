@@ -13,3 +13,5 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 POST    /swansong                   controllers.SwanController.swanSongFormService
+
+GET    /push                       controllers.SwanController.testWebService
