@@ -6,7 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import engine.ExpressionManager;
+import engine.SwanException;
+import engine.TriStateExpressionListener;
+import engine.ValueExpressionListener;
 import models.PushNotificationData;
+import models.SwanSong;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -14,6 +19,7 @@ import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 import swansong.*;
+import views.html.index;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -29,12 +35,21 @@ import static credentials.Firebase.PHONE_TOKEN;
  */
 public class SwanController extends Controller{
 
+    @Inject WSClient ws;
+
     ArrayList<SensorValueExpression> sensorValueExpressionList;
+
+
+    public Result index() {
+        return ok(index.render("Your new application is ready."));
+    }
+
 
 
     public Result swanSongJSONService(){
 
         JsonNode json = request().body().asJson();
+
 
         if(json == null) {
 
@@ -42,11 +57,23 @@ public class SwanController extends Controller{
 
         } else {
 
-            String swanstring = json.findPath("song").textValue();
+
+            String tokenId = json.findPath("tokenId").textValue();
+            String expressionId = json.findPath("expressionId").textValue();
+            String expressionString = json.findPath("expression").textValue();
+
+            System.out.println("tokenId:"+tokenId+" expressionId:"+expressionId+" expressionString:"+expressionString);
+            saveSwanSong(tokenId,expressionId,expressionString);
+
+
+
 
             try {
 
-                Expression expression = ExpressionFactory.parse(swanstring);
+                Expression expression = ExpressionFactory.parse(expressionString);
+
+
+                callWebService(FIREBASE_URL , expressionId, expression);
 
                 return ok("Expression: "+ expression.toParseString());
 
@@ -58,17 +85,35 @@ public class SwanController extends Controller{
 
     }
 
+    public void saveSwanSong(String tokenId, String expressionId, String expression){
 
-    @Inject WSClient ws;
-    public Result testWebService(){
+        SwanSong swanSong = new SwanSong();
+        swanSong.tokenId = tokenId;
+        swanSong.expressionId = expressionId;
+        swanSong.expression = expression;
+
+        swanSong.save();
 
 
-        WSRequest request = ws.url(FIREBASE_URL);
+    }
+
+
+    public Result callWebService(String url, String expressionId, Object data){
+
+
+        WSRequest request = ws.url(url);
         PushNotificationData pushNotificationData = new PushNotificationData();
-        pushNotificationData.to = PHONE_TOKEN;
+
+        SwanSong swansong = SwanSong.find.byId(expressionId);
+
+
+
+        pushNotificationData.to = swansong.tokenId;
+
+
 
         pushNotificationData.data = new PushNotificationData.Data();
-        pushNotificationData.data.key = "value";
+        pushNotificationData.data.field = data;
 
 
 
@@ -84,6 +129,42 @@ public class SwanController extends Controller{
 
         return ok(jsonPromise.toString());
     }
+
+
+
+
+
+    public Result testWebService(){
+
+
+        WSRequest request = ws.url(FIREBASE_URL);
+        PushNotificationData pushNotificationData = new PushNotificationData();
+        pushNotificationData.to = PHONE_TOKEN;
+
+        pushNotificationData.data = new PushNotificationData.Data();
+        pushNotificationData.data.field = 10;
+
+
+
+        JsonNode pushNotificationJsonData = Json.toJson(pushNotificationData);
+
+        System.out.println(pushNotificationJsonData.toString());
+
+
+        request.setHeader("Authorization","key="+APPLICATION_API_KEY);
+        CompletionStage<JsonNode> jsonPromise = request.post(pushNotificationJsonData).thenApply(WSResponse::asJson);
+
+
+
+        return ok(jsonPromise.toString());
+    }
+
+
+
+
+
+
+
 
     public void initialize (String id, Expression expression){
             //System.out.println("initialize-start");
@@ -209,6 +290,84 @@ public class SwanController extends Controller{
                 return ok("Bad expression:" + t);
             }
 
+
+    }
+
+
+
+    public Result testRegisterValueSwan(){
+
+
+        ExpressionManager expressionManager = new ExpressionManager();
+
+        String id = "1234";
+        String myExpression = "self@rain:expected_mm{ANY,0}";
+        try {
+            ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("New value received:" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+    public Result testRegisterTriStateSwan(){
+
+
+        ExpressionManager expressionManager = new ExpressionManager();
+
+        String id = "1235";
+        String myExpression = "self@rain:expected_mm{ANY,0} > 0.0";
+        try {
+            ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
+                @Override
+                public void onNewState(String id, long timestamp, TriState newState) {
+
+                    System.out.println("New state detected:"+newState);
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+    public Result testUnregisterValueSwan(){
+
+
+        String id = "1234";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
+
+    }
+
+
+    public Result testUnregisterTriStateSwan(){
+
+
+        String id = "1235";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
 
     }
 
