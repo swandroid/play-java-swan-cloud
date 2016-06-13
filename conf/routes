@@ -14,12 +14,23 @@ POST    /swansongjson                   controllers.SwanController.swanSongJSONS
 
 GET    /push                       controllers.SwanController.testWebService
 
-GET    /registervalue                   controllers.SwanController.testRegisterValueSwan
+GET    /registerrainvalue                   controllers.SwanController.testRegisterRainValueSwan
 
-GET    /unregistervalue                  controllers.SwanController.testUnregisterValueSwan
-
-
-GET    /registertristate                   controllers.SwanController.testRegisterTriStateSwan
+GET    /unregisterrainvalue                  controllers.SwanController.testUnregisterRainValueSwan
 
 
-GET    /unregistertristate                  controllers.SwanController.testUnregisterTriStateSwan
+GET    /registerraintristate                   controllers.SwanController.testRegisterRainTriStateSwan
+
+
+GET    /unregisterraintristate                  controllers.SwanController.testUnregisterRainTriStateSwan
+
+
+GET    /registertestvalue                   controllers.SwanController.testRegisterTestValueSwan
+
+GET    /unregistertestvalue                  controllers.SwanController.testUnregisterTestValueSwan
+
+
+GET    /registertesttristate                   controllers.SwanController.testRegisterTestTriStateSwan
+
+
+GET    /unregistertesttristate                  controllers.SwanController.testUnregisterTestTriStateSwan

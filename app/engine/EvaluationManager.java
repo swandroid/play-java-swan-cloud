@@ -4,6 +4,7 @@ import sensors.RainSensor;
 import sensors.SensorInterface;
 import swansong.*;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -93,29 +94,70 @@ public class EvaluationManager {
     }
 
 
-    private boolean bindToSensor(final String id,
+    private void bindToSensor(final String id,
                                  final SensorValueExpression expression, boolean discover)
             throws SensorConfigurationException, SensorSetupFailedException {
 
-      //  try {
 
-            //TODO: generalise it to all sensors
-            RainSensor rainSensor = new RainSensor();
-            mSensors.put(id, rainSensor);
+            SensorInterface sensor = checkSensorName(expression);
 
-            rainSensor.register(id,
-                    expression.getValuePath(),
-                    expression.getConfiguration(), expression.getHttConfiguration());
+            if(sensor!=null) {
+                try {
+                    sensor.register(id,
+                            expression.getValuePath(),
+                            expression.getConfiguration(), expression.getHttConfiguration());
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mSensors.put(id, sensor);
+
+            }
+
+        //TODO: generalise it to all sensors
+          //  RainSensor rainSensor = new RainSensor();
+
        // } catch (RemoteException e) {
             //Log.e(TAG, "Registration failed!", e);
 
 
       //  }
 
-        return true;
-
-
     }
+
+
+    private SensorInterface checkSensorName(SensorValueExpression expression){
+
+        String entity = expression.getEntity();
+        String entityInCap = entity.substring(0, 1).toUpperCase() + entity.substring(1).toLowerCase();
+
+        System.out.println("Sensor class name :"+ entityInCap);
+
+        try {
+            Class SensorClass = Class.forName("sensors."+entityInCap+"Sensor");
+
+            Object sensorObject = SensorClass.newInstance();
+
+            if (sensorObject instanceof SensorInterface){
+
+                return (SensorInterface) sensorObject;
+
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
 
 
     private void unbindFromSensor(final String id) {
