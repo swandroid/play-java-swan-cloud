@@ -34,3 +34,8 @@ GET    /registertesttristate                   controllers.SwanController.testRe
 
 
 GET    /unregistertesttristate                  controllers.SwanController.testUnregisterTestTriStateSwan
+
+
+GET    /registerall                         controllers.SwanController.testRegisterAll
+
+GET    /unregisterall                         controllers.SwanController.testUnregisterAll

@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 import static java.lang.Thread.interrupted;
 
 /**
- * Created by goose on 06/06/16.
+ * Created by Roshan Bharath Das on 06/06/16.
  */
 public class EvaluationEngineService /* implements Runnable */ {
 
@@ -123,7 +123,7 @@ public class EvaluationEngineService /* implements Runnable */ {
 
                             long start = System.currentTimeMillis();
 
-                            System.out.println("mEvaluationThread :Head"+head.getId()+" ---- "+head.getExpression());
+                            //System.out.println("mEvaluationThread :Head"+head.getId()+" ---- "+head.getExpression());
 
                             Result result = mEvaluationManager.evaluate(
                                     head.getId(), head.getExpression(),
@@ -137,7 +137,7 @@ public class EvaluationEngineService /* implements Runnable */ {
                             //System.out.println("mEvaluationThread :Result"+result.toString());
 
                             if (head.update(result)) {
-                                System.out.println("mEvaluationThread : before sendUpdate");
+                                //System.out.println("mEvaluationThread : before sendUpdate");
                                 //Log.d(TAG, "Result updated: " + result);
                                 sendUpdate(head, result);
                             }
@@ -234,7 +234,7 @@ public class EvaluationEngineService /* implements Runnable */ {
 
     public void doNotify(String[] ids) {
 
-            System.out.println("doNotify start");
+            //System.out.println("doNotify start");
             if (ids == null) {
                 return;
             }
@@ -267,7 +267,7 @@ public class EvaluationEngineService /* implements Runnable */ {
                         // extra stuff in addition to setting deferUntil to 0
                         queued.setDeferUntil(0);
 
-                        System.out.println("doNotify notify evaluation thread");
+                        //System.out.println("doNotify notify evaluation thread");
                         mEvaluationQueue.add(queued);
                         mEvaluationThread.notifyAll();
                     }
@@ -309,7 +309,7 @@ public class EvaluationEngineService /* implements Runnable */ {
                // update.putExtra(ExpressionManager.EXTRA_NEW_VALUES,
                         //result.getValues());
             } else {
-                System.out.println("sendUpdate: in Tristate");
+                //System.out.println("sendUpdate: in Tristate");
                 update.put(ExpressionManager.EXTRA_NEW_TRISTATE, result.getTriState().name());
                 update.put(ExpressionManager.EXTRA_NEW_TRISTATE_TIMESTAMP,
                         result.getTimestamp());

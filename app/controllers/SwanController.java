@@ -307,7 +307,7 @@ public class SwanController extends Controller{
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if(newValues!=null && newValues.length>0) {
-                        System.out.println("New value received:" + newValues[newValues.length-1].toString());
+                        System.out.println("Rain Sensor (Value):" + newValues[newValues.length-1].toString());
                     }
                 }
             });
@@ -336,7 +336,7 @@ public class SwanController extends Controller{
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if(newValues!=null && newValues.length>0) {
-                        System.out.println("New value received:" + newValues[newValues.length-1].toString());
+                        System.out.println("Test Sensor (Value):" + newValues[newValues.length-1].toString());
                     }
                 }
             });
@@ -357,13 +357,13 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "1235";
-        String myExpression = "self@rain:expected_mm{ANY,0} > 0.0";
+        String myExpression = "self@rain:expected_mm{ANY,1000} > 0.0";
         try {
             ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                 @Override
                 public void onNewState(String id, long timestamp, TriState newState) {
 
-                    System.out.println("New state detected:"+newState);
+                    System.out.println("Rain Sensor (TriState):"+newState);
                 }
             });
         } catch (SwanException e) {
@@ -383,13 +383,13 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "2346";
-        String myExpression = "self@test:value{ANY,0} > 0";
+        String myExpression = "self@test:value{ANY,1000} > 0";
         try {
             ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                 @Override
                 public void onNewState(String id, long timestamp, TriState newState) {
 
-                    System.out.println("New state detected:"+newState);
+                    System.out.println("Test Sensor (TriState):"+newState);
                 }
             });
         } catch (SwanException e) {
@@ -431,7 +431,7 @@ public class SwanController extends Controller{
     public Result testUnregisterTestValueSwan(){
 
 
-        String id = "1234";
+        String id = "2345";
 
         ExpressionManager.unregisterExpression(id);
 
@@ -443,7 +443,7 @@ public class SwanController extends Controller{
     public Result testUnregisterTestTriStateSwan(){
 
 
-        String id = "1235";
+        String id = "2346";
 
         ExpressionManager.unregisterExpression(id);
 
@@ -451,6 +451,33 @@ public class SwanController extends Controller{
 
     }
 
+    public Result testRegisterAll(){
+
+        testRegisterRainValueSwan();
+
+        testRegisterTestValueSwan();
+
+        testRegisterRainTriStateSwan();
+
+        testRegisterTestTriStateSwan();
+
+        return ok("Registered");
+    }
+
+
+
+    public Result testUnregisterAll(){
+
+        testUnregisterRainValueSwan();
+
+        testUnregisterTestValueSwan();
+
+        testUnregisterRainTriStateSwan();
+
+        testUnregisterTestTriStateSwan();
+
+        return ok("Unregistered");
+    }
 
 
 

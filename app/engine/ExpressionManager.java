@@ -1,7 +1,7 @@
 package engine;
 
 /**
- * Created by goose on 09/06/16.
+ * Created by Roshan Bharath Das on 09/06/16.
  */
 
 import java.util.ArrayList;
@@ -93,9 +93,9 @@ public class ExpressionManager {
     public static void receiveUpdate(String id, HashMap update){
 
 
-        System.out.println("receiveUpdate"+id);
+        //System.out.println("receiveUpdate"+id);
         if (sListeners.containsKey(id)) {
-            System.out.println("sListener contains the key"+id);
+           // System.out.println("sListener contains the key"+id);
             if (update.containsKey(EXTRA_NEW_VALUES)) {
                 // do the conversion from Parcelable[] to
                 // TimestampedValue[], casting doesn't work
@@ -103,7 +103,7 @@ public class ExpressionManager {
                 sListeners.get(id).onNewValues(id, timestampedValues);
 
             } else if (update.containsKey(EXTRA_NEW_TRISTATE)) {
-                System.out.println("receiveUpdate: in tristate"+ id);
+               // System.out.println("receiveUpdate: in tristate"+ id);
                 sListeners
                         .get(id)
                         .onNewState(

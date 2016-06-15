@@ -16,11 +16,9 @@ import java.util.*;
 /**
  * Created by goose on 01/06/16.
  */
-public class RainSensor implements SensorInterface {
+public class RainSensor extends AbstractSwanSensor {
 
     private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=%s&lon=%s";
-
-    WebService webService;
 
     private final Map<String, List<TimestampedValue>> values = new HashMap<String, List<TimestampedValue>>();
 
@@ -28,8 +26,6 @@ public class RainSensor implements SensorInterface {
 
     public static final String EXPECTED_MM = "expected_mm";
 
-
-    String valuePath;
 
     class RainPoller extends Thread {
 
@@ -46,7 +42,7 @@ public class RainSensor implements SensorInterface {
         public void run() {
             while (!isInterrupted()) {
 
-                System.out.println("Rain poller running");
+                //System.out.println("Rain poller running");
 
                 long start = System.currentTimeMillis();
 
@@ -70,7 +66,7 @@ public class RainSensor implements SensorInterface {
                     e1.printStackTrace();
                 }
 
-                System.out.println("Rain poller before sleep");
+                //System.out.println("Rain poller before sleep");
                 try {
                     Thread.sleep(Math.max(
                             0,
@@ -78,7 +74,7 @@ public class RainSensor implements SensorInterface {
                 } catch (InterruptedException e) {
                     break;
                 }
-                System.out.println("Rain poller sleep done");
+                //System.out.println("Rain poller sleep done");
             }
         }
 
@@ -95,48 +91,14 @@ public class RainSensor implements SensorInterface {
     }
 
 
-    protected final void putValueTrimSize(final String valuePath,
-                                          final String id, final long now, final Object value /*, final int historySize*/) {
-
-
-        System.out.println("putValueTrimSize:"+value);
-        try {
-            getValues().get(valuePath).add(new TimestampedValue(value, now));
-        } catch (OutOfMemoryError e) {
-            onDestroySensor();
-        }
-
-
-        if (id != null) {
-            notifyDataChangedForId(id);
-        }// else {
-        //    notifyDataChanged(valuePath);
-       // }
-
-
-
-    }
-
-
-    protected final void notifyDataChangedForId(final String... ids) {
-       // Intent notifyIntent = new Intent(ACTION_NOTIFY);
-        //notifyIntent.putExtra("expressionIds", ids);
-        //sendBroadcast(notifyIntent);
-
-        EvaluationEngineService instance = EvaluationEngineService.getInstance();
-        instance.doNotify(ids);
-
-    }
-
-
 
     @Override
     public void register(String id, String valuePath, HashMap configuration, HashMap httpConfiguration) {
 
+        super.register(id,valuePath,configuration,httpConfiguration);
 
-        this.valuePath = valuePath;
-        getValues().put(valuePath,
-                Collections.synchronizedList(new ArrayList<TimestampedValue>()));
+       /* getValues().put(valuePath,
+                Collections.synchronizedList(new ArrayList<TimestampedValue>()));*/
         RainPoller rainPoller = new RainPoller(id, valuePath,
                 configuration);
         activeThreads.put(id, rainPoller);
@@ -147,53 +109,19 @@ public class RainSensor implements SensorInterface {
     @Override
     public void unregister(String id) {
 
+        super.unregister(id);
+
         System.out.println("Unregister sensor called");
         activeThreads.remove(id).interrupt();
 
 
     }
 
-    @Override
-    public List<TimestampedValue> getValues(String id, long now, long timespan) {
-        if(valuePath!=null) {
-
-            //System.out.println("Timestamped value rain sensor: "+getValues().get(valuePath));
-            return getValues().get(valuePath);
-        }
-        return null;
-    }
-
-
-    public final Map<String, List<TimestampedValue>> getValues() {
-        return values;
-    }
 
     @Override
     public String[] getValuePaths() {
         return new String[]{ EXPECTED_MM};
     }
-
-    @Override
-    public void onDestroySensor() {
-
-    }
-
-    @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public long getStartUpTime(String id) {
-        return 0;
-    }
-
-    @Override
-    public double getAverageSensingRate() {
-        return 0;
-    }
-
-
 
 
 

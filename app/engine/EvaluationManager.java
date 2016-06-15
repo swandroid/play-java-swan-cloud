@@ -1,6 +1,7 @@
 package engine;
 
 import sensors.RainSensor;
+import sensors.SensorFactory;
 import sensors.SensorInterface;
 import swansong.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by goose on 06/06/16.
+ * Created by Roshan Bharath Das on 06/06/16.
  */
 public class EvaluationManager {
 
@@ -99,7 +100,8 @@ public class EvaluationManager {
             throws SensorConfigurationException, SensorSetupFailedException {
 
 
-            SensorInterface sensor = checkSensorName(expression);
+           //SensorInterface sensor = checkSensorName(expression);
+            SensorInterface sensor = SensorFactory.getSensor(expression.getEntity());
 
             if(sensor!=null) {
                 try {
@@ -128,7 +130,7 @@ public class EvaluationManager {
     }
 
 
-    private SensorInterface checkSensorName(SensorValueExpression expression){
+  /*  private SensorInterface checkSensorName(SensorValueExpression expression){
 
         String entity = expression.getEntity();
         String entityInCap = entity.substring(0, 1).toUpperCase() + entity.substring(1).toLowerCase();
@@ -157,7 +159,7 @@ public class EvaluationManager {
 
         return null;
     }
-
+*/
 
 
     private void unbindFromSensor(final String id) {
@@ -234,7 +236,7 @@ public class EvaluationManager {
 
      //   System.out.println("getFromSensor: Sensor id");
         if (mSensors.get(id) == null) {
-            System.out.println("getFromSensor: mSensor id null");
+            //System.out.println("getFromSensor: mSensor id null");
           //  Log.d(TAG, "not yet bound for: " + id + ", " + expression);
             Result result = new Result(new TimestampedValue[]{}, 0);
             // TODO make this a constant (configurable?)
@@ -251,7 +253,7 @@ public class EvaluationManager {
             // And can values be null at all?
             if (values == null || values.size() == 0) {
 
-                System.out.println("getFromSensor: values are null");
+                //System.out.println("getFromSensor: values are null");
                 Result result = new Result(new TimestampedValue[]{}, 0);
                 // TODO make this a constant (configurable?)
                 result.setDeferUntil(now + 1000);
@@ -289,16 +291,16 @@ public class EvaluationManager {
 
     public Result evaluate(String id, Expression expression, long now)
             throws SwanException {
-        System.out.println("evaluate method: start");
+        //System.out.println("evaluate method: start");
         if (expression == null) {
             throw new RuntimeException("This should not happen! Please debug");
         }
-        if (mCachedResults.containsKey(id)) {
-            System.out.println("evaluate: mCachedResults contains key");
-            if (mCachedResults.get(id).getDeferUntil() > now) {
-                return mCachedResults.get(id);
-            }
-        }
+//        if (mCachedResults.containsKey(id)) {
+//            System.out.println("evaluate: mCachedResults contains key");
+//            if (mCachedResults.get(id).getDeferUntil() > now) {
+//                return mCachedResults.get(id);
+//            }
+//        }
         Result result = null;
         // if the location is remote, result is null or undefined
         String location = expression.getLocation();
