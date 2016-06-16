@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
-  "org.postgresql" % "postgresql" % "9.4-1204-jdbc42"
+  "org.postgresql" % "postgresql" % "9.4-1204-jdbc42",
+  "org.json"%"org.json"%"chargebee-1.0"
 )
 
 

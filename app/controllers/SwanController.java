@@ -404,6 +404,60 @@ public class SwanController extends Controller{
     }
 
 
+    public Result testRegisterCurrencyValueSwan(){
+
+
+        ExpressionManager expressionManager = new ExpressionManager();
+
+        String id = "3333";
+        String myExpression = "self@currency:exchange{ANY,1000}";
+        try {
+            ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("Currency Sensor (Value):" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+    public Result testRegisterCurrencyTriStateSwan(){
+
+
+        ExpressionManager expressionManager = new ExpressionManager();
+
+        String id = "3334";
+        String myExpression = "self@currency:exchange{ANY,1000} > 0.0";
+        try {
+            ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
+                @Override
+                public void onNewState(String id, long timestamp, TriState newState) {
+
+                    System.out.println("Currency Sensor (TriState):"+newState);
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+
     public Result testUnregisterRainValueSwan(){
 
 
@@ -451,15 +505,48 @@ public class SwanController extends Controller{
 
     }
 
+
+
+    public Result testUnregisterCurrencyValueSwan(){
+
+
+        String id = "3333";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
+
+    }
+
+
+    public Result testUnregisterCurrencyTriStateSwan(){
+
+
+        String id = "3334";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
+
+    }
+
+
+
+
     public Result testRegisterAll(){
 
         testRegisterRainValueSwan();
 
         testRegisterTestValueSwan();
 
+        testRegisterCurrencyValueSwan();
+
         testRegisterRainTriStateSwan();
 
         testRegisterTestTriStateSwan();
+
+        testRegisterCurrencyTriStateSwan();
+
 
         return ok("Registered");
     }
@@ -472,9 +559,13 @@ public class SwanController extends Controller{
 
         testUnregisterTestValueSwan();
 
+        testUnregisterCurrencyValueSwan();
+
         testUnregisterRainTriStateSwan();
 
         testUnregisterTestTriStateSwan();
+
+        testUnregisterCurrencyTriStateSwan();
 
         return ok("Unregistered");
     }
