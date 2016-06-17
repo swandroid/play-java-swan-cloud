@@ -113,7 +113,7 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
 			}
 		} else if (mValue == 1) {
 			// OR
-			if (first == TriState.UNDEFINED && last == TriState.UNDEFINED) {
+			if (first == TriState.UNDEFINED || last == TriState.UNDEFINED) {
 				return TriState.UNDEFINED;
 			} else if (first == TriState.TRUE || last == TriState.TRUE) {
 				return TriState.TRUE;
