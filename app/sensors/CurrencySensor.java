@@ -100,7 +100,7 @@ public class CurrencySensor extends AbstractSwanSensor {
                 try {
                     Thread.sleep(Math.max(
                             0,
-                            3000)); //need to change
+                            1000*60)); //need to change
                 } catch (InterruptedException e) {
                     break;
                 }

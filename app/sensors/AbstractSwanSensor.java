@@ -54,7 +54,7 @@ abstract class AbstractSwanSensor implements SensorInterface {
                                           final String id, final long now, final Object value /*, final int historySize*/) {
 
 
-        //System.out.println("putValueTrimSize:"+value);
+        System.out.println("putValueTrimSize:"+value);
         try {
             getValues().get(valuePath).add(new TimestampedValue(value, now));
         } catch (OutOfMemoryError e) {

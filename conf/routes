@@ -51,6 +51,11 @@ GET    /unregistercurrencytristate                  controllers.SwanController.t
 
 
 
-GET    /registerall                         controllers.SwanController.testRegisterAll
+GET    /registerall                             controllers.SwanController.testRegisterAll
 
 GET    /unregisterall                         controllers.SwanController.testUnregisterAll
+
+
+POST    /registeremail                             controllers.SwanController.registerExpressionForEmailNotification
+
+POST    /unregisteremail                             controllers.SwanController.unRegisterExpressionForEmailNotification

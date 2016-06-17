@@ -1,5 +1,6 @@
 package controllers;
 
+import actuator.SendEmail;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -410,7 +411,7 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "3333";
-        String myExpression = "self@currency:exchange{ANY,1000}";
+        String myExpression = "self@currency:exchange?from='EUR'#to='USD'$server_storage=FALSE{ANY,1000}";
         try {
             ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
                 @Override
@@ -437,11 +438,13 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "3334";
-        String myExpression = "self@currency:exchange{ANY,1000} > 0.0";
+        String myExpression = "self@currency:exchange{ANY,1000} > 75.0 || self@test:value{ANY,1000} > 0";
         try {
             ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                 @Override
                 public void onNewState(String id, long timestamp, TriState newState) {
+
+                    //SendEmail.sendEmail();
 
                     System.out.println("Currency Sensor (TriState):"+newState);
                 }
@@ -453,10 +456,79 @@ public class SwanController extends Controller{
         }
 
 
-        return ok("Registered");
+        return ok("Expression Registered");
 
     }
 
+
+    public Result registerExpressionForEmailNotification(){
+
+
+        JsonNode json = request().body().asJson();
+
+
+        if(json == null) {
+
+            return badRequest("Expecting Json data");
+
+        } else {
+
+
+            String expressionId = json.findPath("id").textValue();
+            String expressionString = json.findPath("expression").textValue();
+
+            String notificationEmail = json.findPath("email").textValue();
+
+            System.out.println("notificationEmail:" + notificationEmail + " expressionId:" + expressionId + " expressionString:" + expressionString);
+
+
+            //String id = "3334";
+            //String myExpression = "self@currency:exchange{ANY,1000} > 75.0 || self@test:value{ANY,1000} > 0";
+            try {
+                ExpressionManager.registerTriStateExpression(expressionId, (TriStateExpression) ExpressionFactory.parse(expressionString), new TriStateExpressionListener() {
+                    @Override
+                    public void onNewState(String id, long timestamp, TriState newState) {
+
+
+                        SendEmail.sendEmail(notificationEmail, expressionId, expressionString, newState);
+
+                        System.out.println("Currency Sensor (TriState):" + newState);
+                    }
+                });
+            } catch (SwanException e) {
+                e.printStackTrace();
+            } catch (ExpressionParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        return ok("Expression Registered");
+
+    }
+
+
+    public Result unRegisterExpressionForEmailNotification() {
+
+
+        JsonNode json = request().body().asJson();
+
+
+        if(json == null) {
+
+            return badRequest("Expecting Json data");
+
+        } else {
+
+            String expressionId = json.findPath("id").textValue();
+            ExpressionManager.unregisterExpression(expressionId);
+
+        }
+
+        return ok("Expression Unregistered");
+
+    }
 
     public Result testUnregisterRainValueSwan(){
 

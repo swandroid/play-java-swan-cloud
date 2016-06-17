@@ -174,7 +174,7 @@ public class EvaluationEngineService /* implements Runnable */ {
 
 
 
-    public void doRegister(final String id, final Expression expression,
+    public synchronized void doRegister(final String id, final Expression expression,
                             final boolean onTrue, final boolean onFalse,
                             final boolean onUndefined, boolean onNewValues) {
         // handle registration
@@ -210,7 +210,7 @@ public class EvaluationEngineService /* implements Runnable */ {
     }
 
 
-    public void doUnregister(final String id) {
+    public synchronized void doUnregister(final String id) {
         QueuedExpression expression = mRegisteredExpressions.get(id);
         if (expression == null) {
             // FAIL!
@@ -232,7 +232,7 @@ public class EvaluationEngineService /* implements Runnable */ {
     }
 
 
-    public void doNotify(String[] ids) {
+    public synchronized void doNotify(String[] ids) {
 
             //System.out.println("doNotify start");
             if (ids == null) {
