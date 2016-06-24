@@ -2,7 +2,7 @@ package services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import models.PushNotificationData;
-import models.SwanSong;
+import models.SwanSongExpression;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -25,7 +25,7 @@ public class WebService {
         WSRequest request = ws.url(url);
         PushNotificationData pushNotificationData = new PushNotificationData();
 
-        SwanSong swansong = SwanSong.find.byId(expressionId);
+        SwanSongExpression swansong = SwanSongExpression.find.byId(expressionId);
 
 
 

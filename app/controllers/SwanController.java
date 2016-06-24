@@ -1,6 +1,7 @@
 package controllers;
 
 import actuator.SendEmail;
+import actuator.SendFacebookMessage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,8 @@ import engine.SwanException;
 import engine.TriStateExpressionListener;
 import engine.ValueExpressionListener;
 import models.PushNotificationData;
-import models.SwanSong;
+import models.SwanSongExpression;
+import org.json.JSONException;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -23,6 +25,7 @@ import swansong.*;
 import views.html.index;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 
@@ -45,6 +48,145 @@ public class SwanController extends Controller{
         return ok(index.render("Your new application is ready."));
     }
 
+
+
+    public Result setupWebHook(){
+
+
+        String[] queryStringToken = request().queryString().get("hub.verify_token");
+
+        String[] queryStringResponse = request().queryString().get("hub.challenge");
+
+        for(String string : queryStringResponse){
+
+            System.out.println(string);
+
+        }
+
+
+        if(queryStringToken[0].equals("my_voice_is_my_password_verify_me")){
+
+                return ok(request().queryString().get("hub.challenge")[0]);
+
+        }
+
+
+
+        return ok("Error, wrong token");
+
+    }
+
+
+
+    public  Result requestWebHookSwanBot() {
+
+
+        JsonNode json = request().body().asJson();
+
+        //System.out.println(json.toString());
+
+        String receivedText = json.findPath("text").textValue();
+
+        JsonNode sender = json.findPath("sender");
+
+
+        String senderid = sender.findPath("id").textValue();
+        String value = json.findPath("text").textValue();
+
+        String command = "unknown",id=null,expression=null;
+        String responseCommand;
+
+        SendFacebookMessage sendFacebookMessage = new SendFacebookMessage();
+
+        if(value!=null) {
+
+            System.out.println(value);
+            String[] parts = value.split(";");
+
+            for (String part : parts) {
+                System.out.println(part);
+            }
+
+            if (parts.length == 3) {
+                command = parts[0];
+                id = parts[1];
+                expression = parts[2];
+            } else if (parts.length == 2) {
+                command = parts[0];
+                id = parts[1];
+            } else {
+                responseCommand = "Minimum number of data should be two";
+                sendFacebookMessage.sendResult(senderid, responseCommand, ws);
+                return ok();
+            }
+
+            if (command.contains("register-value")) {
+
+                if (expression != null && id != null) {
+                    try {
+                        ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(expression), new ValueExpressionListener() {
+                            @Override
+                            public void onNewValues(String id, TimestampedValue[] newValues) {
+                                if (newValues != null && newValues.length > 0) {
+                                    //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
+                                    sendFacebookMessage.sendResult(senderid, newValues[0].toString(), ws);
+                                }
+                            }
+                        });
+                    } catch (SwanException e) {
+                        e.printStackTrace();
+                    } catch (ExpressionParseException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    responseCommand = "Either expression or id is null";
+                    sendFacebookMessage.sendResult(senderid, responseCommand, ws);
+                }
+
+
+            } else if (command.contains("register-tristate")) {
+
+                if (expression != null && id != null) {
+                    try {
+                        ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(expression), new TriStateExpressionListener() {
+                            @Override
+                            public void onNewState(String id, long timestamp, TriState newState) {
+
+                                //SendEmail.sendEmail();
+                                sendFacebookMessage.sendResult(senderid, newState, ws);
+                                System.out.println("Currency Sensor (TriState):" + newState);
+                            }
+                        });
+                    } catch (SwanException e) {
+                        e.printStackTrace();
+                    } catch (ExpressionParseException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    responseCommand = "Either expression or id is null";
+                    sendFacebookMessage.sendResult(senderid, responseCommand, ws);
+                }
+
+            } else if (command.contains("unregister")) {
+
+                ExpressionManager.unregisterExpression(id);
+                responseCommand = "Unregistered";
+                sendFacebookMessage.sendResult(senderid, responseCommand, ws);
+
+            } else {
+
+                responseCommand = "Unknown command";
+                sendFacebookMessage.sendResult(senderid, responseCommand, ws);
+
+            }
+
+            //System.out.println(sender+value);
+
+        }
+
+        return ok();
+
+    }
 
 
     public Result swanSongJSONService(){
@@ -88,7 +230,7 @@ public class SwanController extends Controller{
 
     public void saveSwanSong(String tokenId, String expressionId, String expression){
 
-        SwanSong swanSong = new SwanSong();
+        SwanSongExpression swanSong = new SwanSongExpression();
         swanSong.tokenId = tokenId;
         swanSong.expressionId = expressionId;
         swanSong.expression = expression;
@@ -105,7 +247,7 @@ public class SwanController extends Controller{
         WSRequest request = ws.url(url);
         PushNotificationData pushNotificationData = new PushNotificationData();
 
-        SwanSong swansong = SwanSong.find.byId(expressionId);
+        SwanSongExpression swansong = SwanSongExpression.find.byId(expressionId);
 
 
 
