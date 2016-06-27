@@ -16,3 +16,4 @@ server.pid
 .cache
 .idea/
 app/credentials/
+/out/
