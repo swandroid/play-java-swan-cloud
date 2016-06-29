@@ -245,7 +245,7 @@ public class SwanController extends Controller{
     }
 
 
-    public Result swanPhoneUnegister(){
+    public Result swanPhoneUnregister(){
 
         JsonNode json = request().body().asJson();
 
