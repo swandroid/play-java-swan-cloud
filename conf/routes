@@ -59,3 +59,14 @@ GET    /unregisterall                         controllers.SwanController.testUnr
 POST    /registeremail                             controllers.SwanController.registerExpressionForEmailNotification
 
 POST    /unregisteremail                             controllers.SwanController.unRegisterExpressionForEmailNotification
+
+
+GET /webhook/                                       controllers.SwanController.setupWebHook
+
+
+POST /webhook/                              controllers.SwanController.requestWebHookSwanBot
+
+
+POST /swan/register/                              controllers.SwanController.swanPhoneRegister
+
+POST /swan/unregister/                          controllers.SwanController.swanPhoneUnregister

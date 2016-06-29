@@ -30,8 +30,6 @@ public class SendFacebookMessage {
 
         WSRequest request = ws.url(Facebook.FACEBOOK_URL);
 
-
-
         try {
             JSONObject idJsonObject = new JSONObject();
             idJsonObject.put("id",senderId);

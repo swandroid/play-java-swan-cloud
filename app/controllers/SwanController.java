@@ -2,6 +2,7 @@ package controllers;
 
 import actuator.SendEmail;
 import actuator.SendFacebookMessage;
+import actuator.SendPhoneResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import engine.ValueExpressionListener;
 import models.PushNotificationData;
 import models.SwanSongExpression;
 import org.json.JSONException;
+import org.json.JSONObject;
 import play.libs.Json;
 import play.libs.ws.WSClient;
 import play.libs.ws.WSRequest;
@@ -29,9 +31,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 
+import static com.sun.javafx.tools.resource.DeployResource.Type.data;
 import static credentials.Firebase.APPLICATION_API_KEY;
 import static credentials.Firebase.FIREBASE_URL;
-import static credentials.Firebase.PHONE_TOKEN;
+//import static credentials.Firebase.PHONE_TOKEN;
 
 
 /**
@@ -189,6 +192,88 @@ public class SwanController extends Controller{
     }
 
 
+
+    public Result swanPhoneRegister(){
+
+        JsonNode json = request().body().asJson();
+
+        String id = json.findPath("id").textValue();
+
+        String token = json.findPath("token").textValue();
+        String expression = json.findPath("expression").textValue();
+
+
+        SendPhoneResult sendPhoneResult = new SendPhoneResult();
+
+        if (expression != null && id != null) {
+            try {
+                ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(expression), new ValueExpressionListener() {
+                    @Override
+                    public void onNewValues(String id, TimestampedValue[] newValues) {
+                        if (newValues != null && newValues.length > 0) {
+
+
+                            JSONObject jsonObject = new JSONObject();
+
+
+                            try {
+                                jsonObject.put("id",id);
+                                jsonObject.put("command","register-value");
+                                jsonObject.put("value",newValues[0]);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
+                            sendPhoneResult.sendResult(jsonObject, token, ws);
+
+
+                        }
+                    }
+                });
+            } catch (SwanException e) {
+                e.printStackTrace();
+            } catch (ExpressionParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        return ok();
+    }
+
+
+    public Result swanPhoneUnegister(){
+
+        JsonNode json = request().body().asJson();
+
+        String id = json.findPath("id").textValue();
+
+        String token = json.findPath("token").textValue();
+
+
+        SendPhoneResult sendPhoneResult = new SendPhoneResult();
+        ExpressionManager.unregisterExpression(id);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put("id",id);
+            jsonObject.put("command","unregister");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        sendPhoneResult.sendResult(jsonObject, token, ws);
+
+        return ok();
+    }
+
+
+
     public Result swanSongJSONService(){
 
         JsonNode json = request().body().asJson();
@@ -207,6 +292,7 @@ public class SwanController extends Controller{
 
             System.out.println("tokenId:"+tokenId+" expressionId:"+expressionId+" expressionString:"+expressionString);
             saveSwanSong(tokenId,expressionId,expressionString);
+
 
 
 
@@ -282,7 +368,7 @@ public class SwanController extends Controller{
 
         WSRequest request = ws.url(FIREBASE_URL);
         PushNotificationData pushNotificationData = new PushNotificationData();
-        pushNotificationData.to = PHONE_TOKEN;
+        //pushNotificationData.to = PHONE_TOKEN;
 
         pushNotificationData.data = new PushNotificationData.Data();
         pushNotificationData.data.field = 10;
