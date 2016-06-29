@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 
-import static com.sun.javafx.tools.resource.DeployResource.Type.data;
 import static credentials.Firebase.APPLICATION_API_KEY;
 import static credentials.Firebase.FIREBASE_URL;
 //import static credentials.Firebase.PHONE_TOKEN;
