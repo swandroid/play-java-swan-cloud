@@ -247,20 +247,13 @@ public class SwanController extends Controller{
         return ok();
     }
 
-     public String convertExpression(String expression){  
-
-        String convertedExpression=null;  
-
-        if(expression.contains("cloud")){  
-
-            convertedExpression = expression.replace("cloud","self"); 
-
-        }   
-
+    public String convertExpression(String expression) {
+        String convertedExpression = null;
+        if (expression.contains("cloud")) {
+            convertedExpression = expression.replace("cloud", "self");
+        }
         return convertedExpression;
-
-          } 
-
+    }
 
     public Result swanPhoneUnregister(){
 

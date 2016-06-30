@@ -21,24 +21,22 @@ import static credentials.Firebase.FIREBASE_URL;
  */
 public class SendPhoneResult {
 
-    public void sendResult(String field, String token, WSClient ws){   
-        WSRequest request = ws.url(FIREBASE_URL); 
-        PushNotificationData pushNotificationData = new PushNotificationData(); 
-        pushNotificationData.to = token;  
-        pushNotificationData.data = new PushNotificationData.Data();   
-        try { 
-            ObjectMapper mapper = new ObjectMapper(); 
-            JsonNode actualObj = mapper.readTree(field); 
-            pushNotificationData.data.field = actualObj; 
-        } catch (IOException e)
-        {         e.printStackTrace(); 
-        }   
-
-        JsonNode pushNotificationJsonData = Json.toJson(pushNotificationData);  
-        System.out.println(pushNotificationJsonData.toString());   
-        request.setHeader("Authorization","key="+APPLICATION_API_KEY); 
-        CompletionStage<JsonNode> jsonPromise = request.post(pushNotificationJsonData).thenApply(WSResponse::asJson);    }
-
-
+    public void sendResult(String field, String token, WSClient ws) {
+        WSRequest request = ws.url(FIREBASE_URL);
+        PushNotificationData pushNotificationData = new PushNotificationData();
+        pushNotificationData.to = token;
+        pushNotificationData.data = new PushNotificationData.Data();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode actualObj = mapper.readTree(field);
+            pushNotificationData.data.field = actualObj;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JsonNode pushNotificationJsonData = Json.toJson(pushNotificationData);
+        System.out.println(pushNotificationJsonData.toString());
+        request.setHeader("Authorization", "key=" + APPLICATION_API_KEY);
+        CompletionStage<JsonNode> jsonPromise = request.post(pushNotificationJsonData).thenApply(WSResponse::asJson);
+    }
 
 }
