@@ -202,11 +202,15 @@ public class SwanController extends Controller{
         String expression = json.findPath("expression").textValue();
 
 
+        String convertedExpression = convertExpression(expression);
+
+        System.out.println("id:"+id+"\ntoken:"+token+"\nexpression:"+convertedExpression);
+
         SendPhoneResult sendPhoneResult = new SendPhoneResult();
 
-        if (expression != null && id != null) {
+        if (convertedExpression != null && id != null) {
             try {
-                ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(expression), new ValueExpressionListener() {
+                ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(convertedExpression), new ValueExpressionListener() {
                     @Override
                     public void onNewValues(String id, TimestampedValue[] newValues) {
                         if (newValues != null && newValues.length > 0) {
@@ -226,7 +230,7 @@ public class SwanController extends Controller{
 
 
                             //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
-                            sendPhoneResult.sendResult(jsonObject, token, ws);
+                            sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
 
 
                         }
@@ -242,6 +246,20 @@ public class SwanController extends Controller{
 
         return ok();
     }
+
+     public String convertExpression(String expression){  
+
+        String convertedExpression=null;  
+
+        if(expression.contains("cloud")){  
+
+            convertedExpression = expression.replace("cloud","self"); 
+
+        }   
+
+        return convertedExpression;
+
+          } 
 
 
     public Result swanPhoneUnregister(){
@@ -266,7 +284,7 @@ public class SwanController extends Controller{
         }
 
 
-        sendPhoneResult.sendResult(jsonObject, token, ws);
+        sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
 
         return ok();
     }
