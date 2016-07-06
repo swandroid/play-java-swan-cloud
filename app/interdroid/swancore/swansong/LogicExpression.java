@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 
 public class LogicExpression implements TriStateExpression {
@@ -28,7 +28,7 @@ public class LogicExpression implements TriStateExpression {
 
 	@Override
 	public void setInferredLocation(String location) {
-		if (mLocation.equals(Expression.LOCATION_INFER)) {
+		if (mLocation.equals(LOCATION_INFER)) {
 			mLocation = location;
 			return;
 		}

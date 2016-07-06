@@ -1,6 +1,6 @@
 // $ANTLR 3.5.2 SwanExpression.g 2016-05-23 16:45:22
 
-package swansong;
+package interdroid.swancore.swansong;
 
 
 import org.antlr.runtime.*;

@@ -3,7 +3,7 @@ package sensors;
 import credentials.Firebase;
 import engine.EvaluationEngineService;
 import services.WebService;
-import swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 import java.io.BufferedReader;
 import java.io.IOException;

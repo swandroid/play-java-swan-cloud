@@ -1,8 +1,8 @@
 package sensors;
 
-import swansong.Expression;
-import swansong.SensorValueExpression;
-import swansong.ValueExpression;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.SensorValueExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 import java.util.ArrayList;
 import java.util.HashMap;

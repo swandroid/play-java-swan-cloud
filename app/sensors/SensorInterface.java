@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 
-import swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 /**
  * This is the interface that sensors which make use of the AbstractSensorBase

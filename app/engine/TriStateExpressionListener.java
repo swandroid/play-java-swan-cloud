@@ -5,8 +5,8 @@ package engine;
  */
 
 
-import swansong.Expression;
-import swansong.TriState;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.TriState;
 
 public interface TriStateExpressionListener {
 

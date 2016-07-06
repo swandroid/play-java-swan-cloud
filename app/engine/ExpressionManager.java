@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import swansong.Expression;
-import swansong.TimestampedValue;
-import swansong.TriState;
-import swansong.TriStateExpression;
-import swansong.ValueExpression;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TriState;
+import interdroid.swancore.swansong.TriStateExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class ExpressionManager {
 

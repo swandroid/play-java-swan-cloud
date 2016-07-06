@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 public enum TriState {
 

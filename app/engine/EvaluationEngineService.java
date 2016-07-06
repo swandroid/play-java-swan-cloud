@@ -1,8 +1,8 @@
 package engine;
 
-import swansong.Expression;
-import swansong.Result;
-import swansong.ValueExpression;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.ValueExpression;
 
 import java.util.HashMap;
 import java.util.PriorityQueue;

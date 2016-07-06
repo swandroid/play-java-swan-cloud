@@ -2,7 +2,7 @@ package actuator;
 
 
 import credentials.Gmail;
-import swansong.TriState;
+import interdroid.swancore.swansong.TriState;
 
 import java.util.*;
 import javax.mail.*;

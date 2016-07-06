@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import engine.*;
+import interdroid.swancore.swansong.*;
 import models.PushNotificationData;
 import models.SwanSongExpression;
 import org.json.JSONException;
@@ -223,7 +224,7 @@ public class SwanController extends Controller{
                                 jsonObject.put("action","register-value");
                                 //jsonObject.put("data",newValues[0]);
 
-                                swansong.Result result = new swansong.Result(newValues,newValues[0].getTimestamp());
+                                interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues,newValues[0].getTimestamp());
 
                                 jsonObject.put("data", Converter.objectToString(result));
 

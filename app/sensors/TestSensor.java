@@ -1,7 +1,7 @@
 package sensors;
 
 import engine.EvaluationEngineService;
-import swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 import java.io.IOException;
 import java.util.*;

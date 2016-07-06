@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 
 public class ConstantValueExpression implements ValueExpression {

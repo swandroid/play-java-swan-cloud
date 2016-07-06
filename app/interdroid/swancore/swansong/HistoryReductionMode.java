@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 /**
  * Represents the way an expression reduces the history it examines and performs

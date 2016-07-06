@@ -5,8 +5,8 @@ package engine;
  */
 
 
-import swansong.TriStateExpression;
-import swansong.ValueExpression;
+import interdroid.swancore.swansong.TriStateExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 /**
  * Generic listener for both {@link TriStateExpression} expressions and

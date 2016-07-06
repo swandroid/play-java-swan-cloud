@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 
 public interface Expression extends Parseable<Expression> {

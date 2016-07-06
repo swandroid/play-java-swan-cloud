@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 /**
  * This class is the abstract base for all Sensor services. Sensor implementors

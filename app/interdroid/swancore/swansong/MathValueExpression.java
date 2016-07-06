@@ -1,4 +1,4 @@
-package swansong;
+package interdroid.swancore.swansong;
 
 
 public class MathValueExpression implements ValueExpression {
@@ -50,7 +50,7 @@ public class MathValueExpression implements ValueExpression {
 
 	@Override
 	public void setInferredLocation(String location) {
-		if (mLocation.equals(Expression.LOCATION_INFER)) {
+		if (mLocation.equals(LOCATION_INFER)) {
 			mLocation = location;
 			return;
 		}
