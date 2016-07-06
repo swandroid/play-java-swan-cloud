@@ -4,7 +4,6 @@ import interdroid.swancore.swansong.*;
 import sensors.RainSensor;
 import sensors.SensorFactory;
 import sensors.SensorInterface;
-import swansong.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
