@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import engine.ExpressionManager;
-import engine.SwanException;
-import engine.TriStateExpressionListener;
-import engine.ValueExpressionListener;
+import engine.*;
 import models.PushNotificationData;
 import models.SwanSongExpression;
 import org.json.JSONException;
@@ -228,12 +225,14 @@ public class SwanController extends Controller{
 
                                 swansong.Result result = new swansong.Result(newValues,newValues[0].getTimestamp());
 
-                                jsonObject.put("data",result);
+                                jsonObject.put("data", Converter.objectToString(result));
 
                                 //jsonObject.put("data",newValues[0].getValue());
                                 //jsonObject.put("timestamp",newValues[0].getTimestamp());
 
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
 
