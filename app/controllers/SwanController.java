@@ -209,22 +209,69 @@ public class SwanController extends Controller{
         SendPhoneResult sendPhoneResult = new SendPhoneResult();
 
         if (convertedExpression != null && id != null) {
+
             try {
-                ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(convertedExpression), new ValueExpressionListener() {
-                    @Override
-                    public void onNewValues(String id, TimestampedValue[] newValues) {
-                        if (newValues != null && newValues.length > 0) {
+                Expression checkExpression = ExpressionFactory.parse(convertedExpression);
+
+
+
+                if(checkExpression instanceof ValueExpression) {
+
+
+                    ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(convertedExpression), new ValueExpressionListener() {
+                        @Override
+                        public void onNewValues(String id, TimestampedValue[] newValues) {
+                            if (newValues != null && newValues.length > 0) {
+
+
+                                JSONObject jsonObject = new JSONObject();
+
+
+                                try {
+                                    jsonObject.put("id", id);
+                                    jsonObject.put("action", "register-value");
+                                    //jsonObject.put("data",newValues[0]);
+
+                                    interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues, newValues[0].getTimestamp());
+
+                                    jsonObject.put("data", Converter.objectToString(result));
+
+                                    //jsonObject.put("data",newValues[0].getValue());
+                                    //jsonObject.put("timestamp",newValues[0].getTimestamp());
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
+                                sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
+
+
+                            }
+                        }
+                    });
+
+                }
+                else if(checkExpression instanceof TriStateExpression) {
+
+
+                    ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(convertedExpression), new TriStateExpressionListener() {
+                        @Override
+                        public void onNewState(String id, long timestamp, TriState newState) {
 
 
                             JSONObject jsonObject = new JSONObject();
 
 
                             try {
-                                jsonObject.put("id",id);
-                                jsonObject.put("action","register-value");
+                                jsonObject.put("id", id);
+                                jsonObject.put("action", "register-tristate");
                                 //jsonObject.put("data",newValues[0]);
 
-                                interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues,newValues[0].getTimestamp());
+                                interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
                                 jsonObject.put("data", Converter.objectToString(result));
 
@@ -237,19 +284,23 @@ public class SwanController extends Controller{
                                 e.printStackTrace();
                             }
 
-
-                            //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
                             sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
 
-
                         }
-                    }
-                });
+                    });
+
+
+
+                }
+
+
             } catch (SwanException e) {
                 e.printStackTrace();
-            } catch (ExpressionParseException e) {
+            }
+            catch (ExpressionParseException e) {
                 e.printStackTrace();
             }
+
         }
 
 
