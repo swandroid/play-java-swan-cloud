@@ -21,7 +21,7 @@ import play.libs.ws.WSRequest;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
-import swansong.*;
+import interdroid.swancore.swansong.*;
 import views.html.index;
 
 
