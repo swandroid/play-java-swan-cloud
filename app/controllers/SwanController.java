@@ -221,7 +221,7 @@ public class SwanController extends Controller{
 
                             try {
                                 jsonObject.put("id",id);
-                                jsonObject.put("command","register-value");
+                                jsonObject.put("action","register-value");
                                 jsonObject.put("data",newValues[0].getValue());
                                 jsonObject.put("timestamp",newValues[0].getTimestamp());
 
