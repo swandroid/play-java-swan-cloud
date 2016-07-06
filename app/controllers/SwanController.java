@@ -26,6 +26,8 @@ import play.mvc.Result;
 import swansong.*;
 import views.html.index;
 
+
+
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -222,7 +224,12 @@ public class SwanController extends Controller{
                             try {
                                 jsonObject.put("id",id);
                                 jsonObject.put("action","register-value");
-                                jsonObject.put("data",newValues[0]);
+                                //jsonObject.put("data",newValues[0]);
+
+                                swansong.Result result = new swansong.Result(newValues,newValues[0].getTimestamp());
+
+                                jsonObject.put("data",result);
+
                                 //jsonObject.put("data",newValues[0].getValue());
                                 //jsonObject.put("timestamp",newValues[0].getTimestamp());
 
