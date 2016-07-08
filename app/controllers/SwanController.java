@@ -275,6 +275,7 @@ public class SwanController extends Controller{
 
                                 result.setDeferUntilGuaranteed(false);
 
+                                
                                 jsonObject.put("data", Converter.objectToString(result));
 
                                 //jsonObject.put("data",newValues[0].getValue());
