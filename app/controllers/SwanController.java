@@ -273,6 +273,8 @@ public class SwanController extends Controller{
 
                                 interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
+                                result.setDeferUntilGuaranteed(false);
+
                                 jsonObject.put("data", Converter.objectToString(result));
 
                                 //jsonObject.put("data",newValues[0].getValue());
