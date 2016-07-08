@@ -3,11 +3,11 @@
 
 # --- !Ups
 
-create table swan_song (
+create table swan_song_expression (
   expression_id             varchar(255) not null,
   token_id                  varchar(255),
   expression                varchar(255),
-  constraint pk_swan_song primary key (expression_id))
+  constraint pk_swan_song_expression primary key (expression_id))
 ;
 
 
@@ -15,5 +15,5 @@ create table swan_song (
 
 # --- !Downs
 
-drop table if exists swan_song cascade;
+drop table if exists swan_song_expression cascade;
 
