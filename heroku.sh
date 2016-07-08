@@ -1,5 +1,10 @@
 #!/bin/bash 
 
+git checkout master
+echo 'Current branch : master'
+
+git pull
+echo 'Pulling from master'
 
 git checkout heroku
 echo 'Current branch : heroku'
