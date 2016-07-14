@@ -349,9 +349,28 @@ public class SwanController extends Controller{
 
         String token = json.findPath("token").textValue();
 
+        String strippedId = null;
+
+        if(id.contains(".right")){
+
+            strippedId = id.replace(".right", "");
+
+        }
+        else if(id.contains(".left")){
+
+            strippedId = id.replace(".left", "");
+
+        }
+        else{
+
+            strippedId = id;
+
+
+        }
+
 
         SendPhoneResult sendPhoneResult = new SendPhoneResult();
-        ExpressionManager.unregisterExpression(id);
+        ExpressionManager.unregisterExpression(strippedId);
 
         JSONObject jsonObject = new JSONObject();
 
