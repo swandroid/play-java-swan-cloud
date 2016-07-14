@@ -201,6 +201,8 @@ public class SwanController extends Controller{
         String token = json.findPath("token").textValue();
         String expression = json.findPath("expression").textValue();
 
+        String strippedPartId = null;
+        String strippedId = null;
 
         String convertedExpression = convertExpression(expression);
 
@@ -209,6 +211,8 @@ public class SwanController extends Controller{
         SendPhoneResult sendPhoneResult = new SendPhoneResult();
 
         if (convertedExpression != null && id != null) {
+
+
 
             try {
                 Expression checkExpression = ExpressionFactory.parse(convertedExpression);
@@ -258,16 +262,35 @@ public class SwanController extends Controller{
                 else if(checkExpression instanceof TriStateExpression) {
 
 
-                    ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(convertedExpression), new TriStateExpressionListener() {
+                    if(id.contains(".right")){
+
+                        strippedId = id.replace(".right", "");
+                        strippedPartId = ".right";
+                    }
+                    else if(id.contains(".left")){
+
+                        strippedId = id.replace(".left", "");
+                        strippedPartId = ".left";
+                    }
+                    else{
+
+                        strippedId = id;
+                        strippedPartId = "";
+
+                    }
+
+
+                    String finalStrippedPartId = strippedPartId;
+                    ExpressionManager.registerTriStateExpression(strippedId, (TriStateExpression) ExpressionFactory.parse(convertedExpression), new TriStateExpressionListener() {
                         @Override
-                        public void onNewState(String id, long timestamp, TriState newState) {
+                        public void onNewState(String strippedId, long timestamp, TriState newState) {
 
 
                             JSONObject jsonObject = new JSONObject();
 
 
                             try {
-                                jsonObject.put("id", id);
+                                jsonObject.put("id", strippedId+ finalStrippedPartId);
                                 jsonObject.put("action", "register-tristate");
                                 //jsonObject.put("data",newValues[0]);
 
