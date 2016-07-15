@@ -775,6 +775,34 @@ public class SwanController extends Controller{
 
     }
 
+    public Result testRegisterLoraValueSwan(){
+
+
+        ExpressionManager expressionManager = new ExpressionManager();
+
+        String id = "lora-3333";
+        String myExpression = "self@lora:data?id='09984508'$server_storage=FALSE{ANY,1000}";
+        try {
+            ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("Lora Sensor (Value):" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+
     public Result testRegisterCurrencyTriStateSwan(){
 
 
@@ -933,6 +961,16 @@ public class SwanController extends Controller{
 
     }
 
+    public Result testUnregisterLoraValueSwan(){
+
+
+        String id = "lora-3333";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
+
+    }
 
     public Result testUnregisterCurrencyTriStateSwan(){
 

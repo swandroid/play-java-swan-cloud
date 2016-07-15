@@ -70,3 +70,9 @@ POST /webhook/                              controllers.SwanController.requestWe
 POST /swan/register/                              controllers.SwanController.swanPhoneRegister
 
 POST /swan/unregister/                          controllers.SwanController.swanPhoneUnregister
+
+
+
+GET    /registerloravalue                   controllers.SwanController.testRegisterLoraValueSwan
+
+GET    /unregisterloravalue                  controllers.SwanController.testUnregisterLoraValueSwan
