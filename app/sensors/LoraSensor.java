@@ -99,9 +99,8 @@ public class LoraSensor extends AbstractSwanSensor {
 
                     }
 
+                    conn.setRequestProperty("Content-Type", "application/json");
 
-                    conn.setRequestProperty("Accept", "application/json");
-                    
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
                     while ((line = r.readLine()) != null) {
