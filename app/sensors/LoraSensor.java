@@ -77,7 +77,8 @@ public class LoraSensor extends AbstractSwanSensor {
                     HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
                     //conn.setInstanceFollowRedirects(true);  //you still need to handle redirect manully.
                     //HttpURLConnection.setFollowRedirects(true);
-
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    
                     boolean redirect = false;
 
                     int status = conn.getResponseCode();
@@ -99,7 +100,7 @@ public class LoraSensor extends AbstractSwanSensor {
 
                     }
 
-                    conn.setRequestProperty("Content-Type", "application/json");
+
 
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
