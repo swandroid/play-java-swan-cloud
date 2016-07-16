@@ -122,6 +122,7 @@ public class LoraSensor extends AbstractSwanSensor {
                         if (time==null) {
 
                             time = jsonObject.getString("time");
+                            putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
                         }
 
                         if(!time.contentEquals(jsonObject.getString("time"))) {
