@@ -21,7 +21,7 @@ public class LoraSensor extends AbstractSwanSensor {
 
     private Map<String, LoraSensor.LoraPoller> activeThreads = new HashMap<String, LoraSensor.LoraPoller>();
 
-    private static final String BASE_URL = "http://www.thethingsnetwork.org/api/v0/nodes/%s/";
+    private static final String BASE_URL = "https://www.thethingsnetwork.org/api/v0/nodes/%s/";
 
     public static final String[] VALUEPATH = { "data",
                                             "gateway_eui",
