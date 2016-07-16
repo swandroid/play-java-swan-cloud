@@ -45,6 +45,8 @@ public class LoraSensor extends AbstractSwanSensor {
         private String valuePath;
         private String id;
 
+        String time =null;
+
         LoraPoller(String id, String valuePath, HashMap configuration) {
             this.id = id;
             this.configuration = configuration;
@@ -84,7 +86,7 @@ public class LoraSensor extends AbstractSwanSensor {
 
                     boolean redirect = false;
 
-                    int status = conn.getResponseCode();
+                   /* int status = conn.getResponseCode();
                     if (status != HttpURLConnection.HTTP_OK) {
                         if (status == HttpURLConnection.HTTP_MOVED_TEMP
                                 || status == HttpURLConnection.HTTP_MOVED_PERM
@@ -101,7 +103,7 @@ public class LoraSensor extends AbstractSwanSensor {
 
                         conn = (HttpURLConnection) new URL(newUrl).openConnection();
 
-                    }
+                    } */
 
 
 
@@ -110,17 +112,26 @@ public class LoraSensor extends AbstractSwanSensor {
                     while ((line = r.readLine()) != null) {
                         jsonData += line + "\n";
                     }
-                    System.out.println(jsonData);
+                    //System.out.println(jsonData);
 
 
                     try {
                         JSONArray jsonArray =new JSONArray(jsonData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        System.out.println(jsonObject);
+                        //System.out.println(jsonObject);
+                        if (time==null) {
 
+                            time = jsonObject.getString("time");
+                        }
 
+                        if(!time.contentEquals(jsonObject.getString("time"))) {
 
-                        //putValueTrimSize(valuePath, id, now, jsonObject.getJSONObject(valuePath).getDouble(to));
+                            putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
+
+                        }
+
+                        time = jsonObject.getString("time");
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
