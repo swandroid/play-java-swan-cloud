@@ -79,6 +79,8 @@ public class LoraSensor extends AbstractSwanSensor {
                     //HttpURLConnection.setFollowRedirects(true);
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Accept", "application/json");
+
 
                     boolean redirect = false;
 
