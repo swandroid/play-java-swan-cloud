@@ -68,12 +68,12 @@ public class LoraSensor extends AbstractSwanSensor {
                 }
                 else{
 
-                    url = String.format(BASE_URL, "E77E0008");
+                    url = String.format(BASE_URL, "09984508");
                 }
 
                 String jsonData ="";
 
-                 System.out.println("URL:"+url);
+                 //System.out.println("URL:"+url);
                 try {
                     String line;
                     HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
@@ -119,17 +119,11 @@ public class LoraSensor extends AbstractSwanSensor {
                         JSONArray jsonArray =new JSONArray(jsonData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         //System.out.println(jsonObject);
-                        if (time==null) {
+                        if (time==null || !time.contentEquals(jsonObject.getString("time"))) {
 
-                            time = jsonObject.getString("time");
                             putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
                         }
 
-                        if(!time.contentEquals(jsonObject.getString("time"))) {
-
-                            putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
-
-                        }
 
                         time = jsonObject.getString("time");
 
