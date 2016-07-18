@@ -1,12 +1,10 @@
 package engine;
 
 import interdroid.swancore.swansong.*;
-import sensors.RainSensor;
-import sensors.SensorFactory;
-import sensors.SensorInterface;
+import sensors.base.SensorFactory;
+import sensors.base.SensorInterface;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -13,6 +13,7 @@ import engine.*;
 import interdroid.swancore.swansong.*;
 import models.PushNotificationData;
 import models.SwanSongExpression;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import play.libs.Json;
@@ -22,6 +23,8 @@ import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 import interdroid.swancore.swansong.*;
+import sensors.base.SensorFactory;
+import sensors.base.SensorInterface;
 import views.html.index;
 
 
@@ -29,6 +32,7 @@ import views.html.index;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static credentials.Firebase.APPLICATION_API_KEY;
@@ -1025,4 +1029,36 @@ public class SwanController extends Controller{
 
 
 
-}
+    public Result testGetAllSensors(){
+
+
+        List<SensorInterface> sensors= SensorFactory.getAllSensors();
+
+
+       JSONArray jsonArray = new JSONArray();
+
+        for(SensorInterface sensor:sensors){
+
+            JSONObject jsonObj = new JSONObject();
+
+            try {
+
+                jsonObj.put("entity", sensor.getEntity());
+                jsonObj.put("valuepath", sensor.getValuePaths());
+                jsonObj.put("configuration", sensor.getConfiguration());
+                jsonArray.put(jsonObj);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        return ok(jsonArray.toString());
+    }
+
+
+
+    }

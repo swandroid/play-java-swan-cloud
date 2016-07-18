@@ -76,3 +76,6 @@ POST /swan/unregister/                          controllers.SwanController.swanP
 GET    /registerloravalue                   controllers.SwanController.testRegisterLoraValueSwan
 
 GET    /unregisterloravalue                  controllers.SwanController.testUnregisterLoraValueSwan
+
+
+GET    /sensors                  controllers.SwanController.testGetAllSensors

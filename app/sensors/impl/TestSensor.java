@@ -1,9 +1,7 @@
-package sensors;
+package sensors.impl;
 
-import engine.EvaluationEngineService;
-import interdroid.swancore.swansong.TimestampedValue;
+import sensors.base.AbstractSwanSensor;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -87,6 +85,16 @@ public class TestSensor extends AbstractSwanSensor {
     @Override
     public String[] getValuePaths()  {
         return new String[]{ VALUE};
+    }
+
+    @Override
+    public String getEntity() {
+        return "test";
+    }
+
+    @Override
+    public String[] getConfiguration() {
+        return null;
     }
 
 

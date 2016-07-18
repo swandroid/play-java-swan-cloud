@@ -1,4 +1,4 @@
-package sensors;
+package sensors.base;
 
 /**
  * Created by goose on 08/06/16.
@@ -53,6 +53,11 @@ public interface SensorInterface {
      * @return the value paths this sensor puts out
      */
     String[] getValuePaths();
+
+
+    String getEntity();
+
+    String[] getConfiguration();
 
     /**
      * Callback when a sensor is being destroyed.

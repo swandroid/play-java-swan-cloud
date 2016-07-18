@@ -1,4 +1,4 @@
-package sensors;
+package sensors.impl;
 
 
 import java.io.BufferedReader;
@@ -9,10 +9,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import sensors.base.AbstractSwanSensor;
 
 /**
  * Created by goose on 16/06/16.
@@ -144,10 +144,15 @@ public class CurrencySensor extends AbstractSwanSensor {
         return new String[]{"exchange"};
     }
 
+    @Override
+    public String getEntity() {
+        return "currency";
+    }
 
-
-
-
+    @Override
+    public String[] getConfiguration() {
+        return new String[]{"from","to"};
+    }
 
 
 }

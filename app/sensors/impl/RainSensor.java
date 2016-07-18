@@ -1,8 +1,6 @@
-package sensors;
+package sensors.impl;
 
-import credentials.Firebase;
-import engine.EvaluationEngineService;
-import services.WebService;
+import sensors.base.AbstractSwanSensor;
 import interdroid.swancore.swansong.TimestampedValue;
 
 import java.io.BufferedReader;
@@ -123,7 +121,15 @@ public class RainSensor extends AbstractSwanSensor {
         return new String[]{ EXPECTED_MM};
     }
 
+    @Override
+    public String getEntity() {
+        return "rain";
+    }
 
+    @Override
+    public String[] getConfiguration() {
+        return new String[] {"latitude","longitude"};
+    }
 
 
 }

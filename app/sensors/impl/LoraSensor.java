@@ -1,8 +1,9 @@
-package sensors;
+package sensors.impl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import sensors.base.AbstractSwanSensor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,5 +189,15 @@ public class LoraSensor extends AbstractSwanSensor {
     @Override
     public String[] getValuePaths() {
         return VALUEPATH;
+    }
+
+    @Override
+    public String getEntity() {
+        return "lora";
+    }
+
+    @Override
+    public String[] getConfiguration() {
+        return new String[]{"id"};
     }
 }

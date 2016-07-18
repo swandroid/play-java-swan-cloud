@@ -1,4 +1,4 @@
-package sensors;
+package sensors.base;
 
 /**
  * Created by Roshan Bharath Das on 08/06/16.
@@ -16,9 +16,7 @@ import engine.EvaluationEngineService;
 import interdroid.swancore.swansong.TimestampedValue;
 
 
-
-
-abstract class AbstractSwanSensor implements SensorInterface {
+public abstract class AbstractSwanSensor implements SensorInterface {
 
 
 
