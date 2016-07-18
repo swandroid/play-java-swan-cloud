@@ -45,7 +45,8 @@ public class LoraSensor extends AbstractSwanSensor {
         private String valuePath;
         private String id;
 
-        String time =null;
+        String previousTime =null;
+        String previousValuePath =null;
 
         LoraPoller(String id, String valuePath, HashMap configuration) {
             this.id = id;
@@ -119,13 +120,15 @@ public class LoraSensor extends AbstractSwanSensor {
                         JSONArray jsonArray =new JSONArray(jsonData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         //System.out.println(jsonObject);
-                        if (time==null || !time.contentEquals(jsonObject.getString("time"))) {
+                        if (previousTime==null || !previousTime.contentEquals(jsonObject.getString("time"))) {
 
-                            putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
+                            if(previousValuePath==null || !previousValuePath.contentEquals((String) jsonObject.get(valuePath))) {
+                                putValueTrimSize(valuePath, id, now, jsonObject.get(valuePath));
+                            }
                         }
 
-
-                        time = jsonObject.getString("time");
+                        previousValuePath = (String) jsonObject.get(valuePath);
+                        previousTime = jsonObject.getString("time");
 
 
                     } catch (JSONException e) {
