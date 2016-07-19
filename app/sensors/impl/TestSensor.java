@@ -38,14 +38,14 @@ public class TestSensor extends AbstractSwanSensor {
                 long now = System.currentTimeMillis();
 
 
+                System.out.println("DELAY="+DELAY);
+
                 putValueTrimSize(valuePath,id,now, ThreadLocalRandom.current().nextInt(0, 1 + 1));
 
 
                 //System.out.println("test poller before sleep");
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            3000)); //need to change
+                    Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -94,7 +94,7 @@ public class TestSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getConfiguration() {
-        return null;
+        return new String[] {"delay"};
     }
 
 

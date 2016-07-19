@@ -19,6 +19,7 @@ import interdroid.swancore.swansong.TimestampedValue;
 public abstract class AbstractSwanSensor implements SensorInterface {
 
 
+    protected long DELAY = 1000;
 
 
     protected AbstractSwanSensor(){
@@ -120,6 +121,11 @@ public abstract class AbstractSwanSensor implements SensorInterface {
             expressionIdsPerValuePath.put(valuePath, ids);
         }
         ids.add(id);*/
+
+        if(configuration.containsKey("delay")) {
+            DELAY = Long.parseLong((String) configuration.get("delay"));
+        }
+
 
 
     }

@@ -66,9 +66,7 @@ public class RainSensor extends AbstractSwanSensor {
 
                 //System.out.println("Rain poller before sleep");
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            5000)); //need to change
+                    Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -128,7 +126,7 @@ public class RainSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getConfiguration() {
-        return new String[] {"latitude","longitude"};
+        return new String[] {"delay","latitude","longitude"};
     }
 
 

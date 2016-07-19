@@ -21,6 +21,8 @@ public class LoraSensor extends AbstractSwanSensor {
 
     private Map<String, LoraSensor.LoraPoller> activeThreads = new HashMap<String, LoraSensor.LoraPoller>();
 
+
+
     private static final String BASE_URL = "https://www.thethingsnetwork.org/api/v0/nodes/%s/";
 
     public static final String[] VALUEPATH = { "data",
@@ -36,14 +38,13 @@ public class LoraSensor extends AbstractSwanSensor {
                                             "data_json" };
 
 
-
-
-
     class LoraPoller extends Thread {
 
         private HashMap configuration;
         private String valuePath;
         private String id;
+
+
 
         String previousTime =null;
         String previousValuePath =null;
@@ -52,6 +53,8 @@ public class LoraSensor extends AbstractSwanSensor {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+
         }
 
         public void run() {
@@ -147,9 +150,7 @@ public class LoraSensor extends AbstractSwanSensor {
 
                 //System.out.println("test poller before sleep");
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            3000)); //need to change
+                    Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -166,6 +167,7 @@ public class LoraSensor extends AbstractSwanSensor {
     public void register(String id, String valuePath, HashMap configuration, HashMap httpConfiguration) {
 
         super.register(id,valuePath,configuration,httpConfiguration);
+
 
         /*getValues().put(valuePath,
                 Collections.synchronizedList(new ArrayList<TimestampedValue>()));*/
@@ -198,6 +200,6 @@ public class LoraSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getConfiguration() {
-        return new String[]{"id"};
+        return new String[]{"delay","id"};
     }
 }

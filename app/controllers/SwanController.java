@@ -678,7 +678,10 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "2345";
-        String myExpression = "self@test:value{ANY,0}";
+        //String myExpression = "self@test:value{ANY,0}";
+        String myExpression = "self@test:value?delay='5000'$server_storage=FALSE{ANY,1000}";
+
+
         try {
             ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
                 @Override

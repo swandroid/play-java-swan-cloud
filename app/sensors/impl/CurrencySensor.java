@@ -38,8 +38,6 @@ public class CurrencySensor extends AbstractSwanSensor {
             this.valuePath = valuePath;
         }
 
-
-
         public void run() {
             while (!isInterrupted()) {
 
@@ -98,9 +96,7 @@ public class CurrencySensor extends AbstractSwanSensor {
 
 
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            1000*60)); //need to change
+                    Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -151,7 +147,7 @@ public class CurrencySensor extends AbstractSwanSensor {
 
     @Override
     public String[] getConfiguration() {
-        return new String[]{"from","to"};
+        return new String[]{"delay","from","to"};
     }
 
 

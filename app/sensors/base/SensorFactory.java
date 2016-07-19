@@ -1,7 +1,6 @@
 package sensors.base;
 
 import org.reflections.Reflections;
-import sensors.base.SensorInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class SensorFactory {
            // System.out.println("Sensor class name :"+ entityInCap);
 
             try {
-                Class SensorClass = Class.forName("sensors."+entityInCap+"Sensor");
+                Class SensorClass = Class.forName("sensors.impl."+entityInCap+"Sensor");
 
                 Object sensorObject = SensorClass.newInstance();
 
@@ -65,7 +64,6 @@ public class SensorFactory {
 
             for(Class className : allClasses){
 
-                //System.out.println(className.getSimpleName());
                 try {
                     Object sensorObject = className.newInstance();
 
@@ -83,8 +81,6 @@ public class SensorFactory {
 
             }
 
-
-        //System.out.println(sensorInterfaces.get(0).getEntity()+sensorInterfaces.get(1).getEntity()+sensorInterfaces.get(2).getEntity()+sensorInterfaces.get(3).getEntity());
         return sensorInterfaces;
     }
 

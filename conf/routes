@@ -25,9 +25,9 @@ GET    /registerraintristate                   controllers.SwanController.testRe
 GET    /unregisterraintristate                  controllers.SwanController.testUnregisterRainTriStateSwan
 
 
-GET    /registertestvalue                   controllers.SwanController.testRegisterTestValueSwan
+GET    /register/test/value                   controllers.SwanController.testRegisterTestValueSwan
 
-GET    /unregistertestvalue                  controllers.SwanController.testUnregisterTestValueSwan
+GET    /unregister/test/value                  controllers.SwanController.testUnregisterTestValueSwan
 
 
 GET    /registertesttristate                   controllers.SwanController.testRegisterTestTriStateSwan

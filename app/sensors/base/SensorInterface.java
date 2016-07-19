@@ -54,9 +54,14 @@ public interface SensorInterface {
      */
     String[] getValuePaths();
 
-
+    /**
+     * @return the sensor name
+     */
     String getEntity();
 
+    /**
+     * @return the configurations this sensor puts out
+     */
     String[] getConfiguration();
 
     /**
