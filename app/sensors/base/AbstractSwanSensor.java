@@ -70,7 +70,7 @@ public abstract class AbstractSwanSensor implements SensorInterface {
 
     }
 
-
+    //TODO: remove this method once sensor poller is ready
     protected boolean valueChange(Object previousValue, Object value){
 
         if(previousValue==null || !previousValue.equals(value)){

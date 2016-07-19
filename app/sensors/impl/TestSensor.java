@@ -1,12 +1,13 @@
 package sensors.impl;
 
 import sensors.base.AbstractSwanSensor;
+import sensors.base.SensorPoller;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by goose on 13/06/16.
+ * Created by Roshan Bharath Das on 13/06/16.
  */
 public class TestSensor extends AbstractSwanSensor {
 
@@ -14,60 +15,38 @@ public class TestSensor extends AbstractSwanSensor {
     private Map<String, TestPoller> activeThreads = new HashMap<String, TestPoller>();
 
 
-
     public static final String VALUE = "value";
 
 
-    class TestPoller extends Thread {
+    class TestPoller extends SensorPoller {
 
-        private HashMap configuration;
-        private String valuePath;
-        private String id;
+        int i=0;
 
-
-        Object previousValue=null;
-        Object currentValue;
-
-        protected long DELAY = 1000;
 
         TestPoller(String id, String valuePath, HashMap configuration) {
-            this.id = id;
-            this.configuration = configuration;
-            this.valuePath = valuePath;
-
-            if(configuration.containsKey("delay")) {
-                DELAY = Long.parseLong((String) configuration.get("delay"));
-            }
+            super(id, valuePath, configuration);
         }
+
 
         public void run() {
             while (!isInterrupted()) {
-
 
                 //System.out.println("Test poller running");
 
                 long now = System.currentTimeMillis();
 
 
-                System.out.println("DELAY="+DELAY);
+                i ^= 1;
+                System.out.println("DELAY="+DELAY+ " I value="+i);
 
-                currentValue = ThreadLocalRandom.current().nextInt(0, 1 + 1);
+              updateResult(TestSensor.this,i,System.currentTimeMillis());
 
-
-                if(valueChange(previousValue,currentValue)) {
-                    putValueTrimSize(valuePath, id, now, currentValue);
-
-                }
-
-                previousValue =currentValue;
-
-                //System.out.println("test poller before sleep");
-                try {
+               try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
-                //System.out.println("test poller sleep done");
+
             }
         }
 

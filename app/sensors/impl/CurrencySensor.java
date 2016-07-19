@@ -13,6 +13,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sensors.base.AbstractSwanSensor;
+import sensors.base.SensorPoller;
 
 /**
  * Created by goose on 16/06/16.
@@ -25,37 +26,19 @@ public class CurrencySensor extends AbstractSwanSensor {
     private Map<String, CurrencyPoller> activeThreads = new HashMap<String, CurrencyPoller>();
 
 
-    public class CurrencyPoller extends Thread{
+    public class CurrencyPoller extends SensorPoller{
 
-        private HashMap configuration;
-        private String valuePath;
-        private String id;
         String url;
 
-
-        Object previousValue=null;
-        Object currentValue;
-
-        protected long DELAY = 1000;
-
-        CurrencyPoller(String id, String valuePath, HashMap configuration) {
-            this.id = id;
-            this.configuration = configuration;
-            this.valuePath = valuePath;
-
-            if(configuration.containsKey("delay")) {
-                DELAY = Long.parseLong((String) configuration.get("delay"));
-            }
+        protected CurrencyPoller(String id, String valuePath, HashMap configuration) {
+            super(id, valuePath, configuration);
         }
+
 
         public void run() {
             while (!isInterrupted()) {
 
                 long now = System.currentTimeMillis();
-
-
-
-
 
                 String from = "EUR";
                 String to = "INR";
@@ -92,13 +75,8 @@ public class CurrencySensor extends AbstractSwanSensor {
 
                     try {
                         JSONObject jsonObject = new JSONObject(jsonData);
-                        currentValue = jsonObject.getJSONObject("rates").getDouble(to);
 
-                        if(valueChange(previousValue,currentValue)) {
-
-                            putValueTrimSize(valuePath, id, now, currentValue);
-                        }
-                        previousValue = currentValue;
+                        updateResult(CurrencySensor.this,jsonObject.getJSONObject("rates").getDouble(to),now);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -126,8 +104,6 @@ public class CurrencySensor extends AbstractSwanSensor {
 
 
     }
-
-
 
 
     @Override

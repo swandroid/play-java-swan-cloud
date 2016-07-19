@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sensors.base.AbstractSwanSensor;
+import sensors.base.SensorPoller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,28 +39,14 @@ public class LoraSensor extends AbstractSwanSensor {
                                             "data_json" };
 
 
-    class LoraPoller extends Thread {
+    class LoraPoller extends SensorPoller {
 
-        private HashMap configuration;
-        private String valuePath;
-        private String id;
-
-        Object previousValue=null;
-        Object currentValue;
-
-        protected long DELAY = 1000;
-
-        LoraPoller(String id, String valuePath, HashMap configuration) {
-            this.id = id;
-            this.configuration = configuration;
-            this.valuePath = valuePath;
-
-            if(configuration.containsKey("delay")) {
-                DELAY = Long.parseLong((String) configuration.get("delay"));
-            }
-
-
+        protected LoraPoller(String id, String valuePath, HashMap configuration) {
+            super(id, valuePath, configuration);
         }
+
+        String url;
+
 
         public void run() {
             while (!isInterrupted()) {
@@ -69,7 +56,7 @@ public class LoraSensor extends AbstractSwanSensor {
                 long now = System.currentTimeMillis();
 
 
-                String url;
+
                 if(configuration.containsKey("id")) {
 
                     url = String.format(BASE_URL, configuration.get("id"));
@@ -94,25 +81,6 @@ public class LoraSensor extends AbstractSwanSensor {
 
                     boolean redirect = false;
 
-                   /* int status = conn.getResponseCode();
-                    if (status != HttpURLConnection.HTTP_OK) {
-                        if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                                || status == HttpURLConnection.HTTP_MOVED_PERM
-                                || status == HttpURLConnection.HTTP_SEE_OTHER)
-                            redirect = true;
-                    }
-
-                    if (redirect) {
-
-                        // get redirect url from "location" header field
-                        String newUrl = conn.getHeaderField("Location");
-                        // open the new connnection again
-                        System.out.println("New URL:"+newUrl);
-
-                        conn = (HttpURLConnection) new URL(newUrl).openConnection();
-
-                    } */
-
 
 
                     BufferedReader r = new BufferedReader(new InputStreamReader(
@@ -120,24 +88,13 @@ public class LoraSensor extends AbstractSwanSensor {
                     while ((line = r.readLine()) != null) {
                         jsonData += line + "\n";
                     }
-                    //System.out.println(jsonData);
-
 
                     try {
                         JSONArray jsonArray =new JSONArray(jsonData);
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         //System.out.println(jsonObject);
 
-
-                         currentValue = jsonObject.get(valuePath);
-
-                        if(valueChange(previousValue,currentValue)) {
-
-                            putValueTrimSize(valuePath, id, now, currentValue);
-
-                        }
-
-                        previousValue =currentValue;
+                        updateResult(LoraSensor.this,jsonObject.get(valuePath),now);
 
 
                     } catch (JSONException e) {
@@ -153,15 +110,12 @@ public class LoraSensor extends AbstractSwanSensor {
                     e1.printStackTrace();
                 }
 
-
-                //System.out.println("test poller before sleep");
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
                     break;
                 }
-                //System.out.println("test poller sleep done");
-            }
+             }
         }
 
 
@@ -175,9 +129,7 @@ public class LoraSensor extends AbstractSwanSensor {
         super.register(id,valuePath,configuration,httpConfiguration);
 
 
-        /*getValues().put(valuePath,
-                Collections.synchronizedList(new ArrayList<TimestampedValue>()));*/
-        LoraPoller loraPoller = new LoraPoller(id, valuePath,
+         LoraPoller loraPoller = new LoraPoller(id, valuePath,
                 configuration);
         activeThreads.put(id, loraPoller);
         loraPoller.start();

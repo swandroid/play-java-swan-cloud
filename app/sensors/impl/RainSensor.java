@@ -2,6 +2,7 @@ package sensors.impl;
 
 import sensors.base.AbstractSwanSensor;
 import interdroid.swancore.swansong.TimestampedValue;
+import sensors.base.SensorPoller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,31 +26,17 @@ public class RainSensor extends AbstractSwanSensor {
     public static final String EXPECTED_MM = "expected_mm";
 
 
-    class RainPoller extends Thread {
+    class RainPoller extends SensorPoller {
 
-        private HashMap configuration;
-        private String valuePath;
-        private String id;
 
-        Object previousValue=null;
-        Object currentValue;
-
-        protected long DELAY = 1000;
-
-        RainPoller(String id, String valuePath, HashMap configuration) {
-            this.id = id;
-            this.configuration = configuration;
-            this.valuePath = valuePath;
-
-            if(configuration.containsKey("delay")) {
-                DELAY = Long.parseLong((String) configuration.get("delay"));
-            }
+        protected RainPoller(String id, String valuePath, HashMap configuration) {
+            super(id, valuePath, configuration);
         }
+
 
         public void run() {
             while (!isInterrupted()) {
 
-                //System.out.println("Rain poller running");
 
                 long now = System.currentTimeMillis();
 
@@ -62,15 +49,8 @@ public class RainSensor extends AbstractSwanSensor {
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
                     String line = r.readLine();
-                    currentValue = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
 
-                    if(valueChange(previousValue,currentValue)) {
-                        putValueTrimSize(valuePath, id, now, currentValue);
-
-                    }
-
-                    previousValue =currentValue;
-
+                    updateResult(RainSensor.this,convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3))),now);
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block
@@ -109,9 +89,7 @@ public class RainSensor extends AbstractSwanSensor {
 
         super.register(id,valuePath,configuration,httpConfiguration);
 
-       /* getValues().put(valuePath,
-                Collections.synchronizedList(new ArrayList<TimestampedValue>()));*/
-        RainPoller rainPoller = new RainPoller(id, valuePath,
+           RainPoller rainPoller = new RainPoller(id, valuePath,
                 configuration);
         activeThreads.put(id, rainPoller);
         rainPoller.start();
