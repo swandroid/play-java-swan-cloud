@@ -32,16 +32,29 @@ public class CurrencySensor extends AbstractSwanSensor {
         private String id;
         String url;
 
+
+        Object previousValue=null;
+        Object currentValue;
+
+        protected long DELAY = 1000;
+
         CurrencyPoller(String id, String valuePath, HashMap configuration) {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+            if(configuration.containsKey("delay")) {
+                DELAY = Long.parseLong((String) configuration.get("delay"));
+            }
         }
 
         public void run() {
             while (!isInterrupted()) {
 
                 long now = System.currentTimeMillis();
+
+
+
 
 
                 String from = "EUR";
@@ -79,7 +92,13 @@ public class CurrencySensor extends AbstractSwanSensor {
 
                     try {
                         JSONObject jsonObject = new JSONObject(jsonData);
-                        putValueTrimSize(valuePath, id, now, jsonObject.getJSONObject("rates").getDouble(to));
+                        currentValue = jsonObject.getJSONObject("rates").getDouble(to);
+
+                        if(valueChange(previousValue,currentValue)) {
+
+                            putValueTrimSize(valuePath, id, now, currentValue);
+                        }
+                        previousValue = currentValue;
 
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -31,10 +31,19 @@ public class RainSensor extends AbstractSwanSensor {
         private String valuePath;
         private String id;
 
+        Object previousValue=null;
+        Object currentValue;
+
+        protected long DELAY = 1000;
+
         RainPoller(String id, String valuePath, HashMap configuration) {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+            if(configuration.containsKey("delay")) {
+                DELAY = Long.parseLong((String) configuration.get("delay"));
+            }
         }
 
         public void run() {
@@ -42,7 +51,7 @@ public class RainSensor extends AbstractSwanSensor {
 
                 //System.out.println("Rain poller running");
 
-                long start = System.currentTimeMillis();
+                long now = System.currentTimeMillis();
 
                 String url = String.format(BASE_URL, configuration.get("latitude"),
                         configuration.get("longitude"));
@@ -53,8 +62,15 @@ public class RainSensor extends AbstractSwanSensor {
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
                     String line = r.readLine();
-                    float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                    putValueTrimSize(valuePath, id, start, value);
+                    currentValue = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+
+                    if(valueChange(previousValue,currentValue)) {
+                        putValueTrimSize(valuePath, id, now, currentValue);
+
+                    }
+
+                    previousValue =currentValue;
+
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block

@@ -19,7 +19,8 @@ import interdroid.swancore.swansong.TimestampedValue;
 public abstract class AbstractSwanSensor implements SensorInterface {
 
 
-    protected long DELAY = 1000;
+
+
 
 
     protected AbstractSwanSensor(){
@@ -53,23 +54,32 @@ public abstract class AbstractSwanSensor implements SensorInterface {
                                           final String id, final long now, final Object value /*, final int historySize*/) {
 
 
-        System.out.println("putValueTrimSize:"+value);
-        try {
-            getValues().get(valuePath).add(new TimestampedValue(value, now));
-        } catch (OutOfMemoryError e) {
-            onDestroySensor();
-        }
+            System.out.println("putValueTrimSize:"+value);
+            try {
+                getValues().get(valuePath).add(new TimestampedValue(value, now));
+            } catch (OutOfMemoryError e) {
+                onDestroySensor();
+            }
 
 
-        if (id != null) {
-            notifyDataChangedForId(id);
-        }// else {
-        //    notifyDataChanged(valuePath);
-        // }
-
+            if (id != null) {
+                notifyDataChangedForId(id);
+            }// else {
+            //    notifyDataChanged(valuePath);
+            // }
 
     }
 
+
+    protected boolean valueChange(Object previousValue, Object value){
+
+        if(previousValue==null || !previousValue.equals(value)){
+            return true;
+
+        }
+
+        return false;
+    }
 
 
     protected final void notifyDataChangedForId(final String... ids) {
@@ -121,11 +131,6 @@ public abstract class AbstractSwanSensor implements SensorInterface {
             expressionIdsPerValuePath.put(valuePath, ids);
         }
         ids.add(id);*/
-
-        if(configuration.containsKey("delay")) {
-            DELAY = Long.parseLong((String) configuration.get("delay"));
-        }
-
 
 
     }

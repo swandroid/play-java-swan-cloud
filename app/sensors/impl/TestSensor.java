@@ -24,14 +24,25 @@ public class TestSensor extends AbstractSwanSensor {
         private String valuePath;
         private String id;
 
+
+        Object previousValue=null;
+        Object currentValue;
+
+        protected long DELAY = 1000;
+
         TestPoller(String id, String valuePath, HashMap configuration) {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+            if(configuration.containsKey("delay")) {
+                DELAY = Long.parseLong((String) configuration.get("delay"));
+            }
         }
 
         public void run() {
             while (!isInterrupted()) {
+
 
                 //System.out.println("Test poller running");
 
@@ -40,8 +51,15 @@ public class TestSensor extends AbstractSwanSensor {
 
                 System.out.println("DELAY="+DELAY);
 
-                putValueTrimSize(valuePath,id,now, ThreadLocalRandom.current().nextInt(0, 1 + 1));
+                currentValue = ThreadLocalRandom.current().nextInt(0, 1 + 1);
 
+
+                if(valueChange(previousValue,currentValue)) {
+                    putValueTrimSize(valuePath, id, now, currentValue);
+
+                }
+
+                previousValue =currentValue;
 
                 //System.out.println("test poller before sleep");
                 try {

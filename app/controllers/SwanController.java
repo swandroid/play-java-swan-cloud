@@ -675,9 +675,7 @@ public class SwanController extends Controller{
     public Result testRegisterTestValueSwan(){
 
 
-        ExpressionManager expressionManager = new ExpressionManager();
-
-        String id = "2345";
+        String id = "test1-2345";
         //String myExpression = "self@test:value{ANY,0}";
         String myExpression = "self@test:value?delay='5000'$server_storage=FALSE{ANY,1000}";
 
@@ -687,7 +685,28 @@ public class SwanController extends Controller{
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if(newValues!=null && newValues.length>0) {
-                        System.out.println("Test Sensor (Value):" + newValues[newValues.length-1].toString());
+                        System.out.println("Test Sensor (Value)1:" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        String id2 = "test2-2345";
+        //String myExpression = "self@test:value{ANY,0}";
+        String myExpression2 = "self@test:value?delay='10000'$server_storage=FALSE{ANY,1000}";
+
+
+        try {
+            ExpressionManager.registerValueExpression(id2, (ValueExpression) ExpressionFactory.parse(myExpression2), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("Test Sensor (Value)2:" + newValues[newValues.length-1].toString());
                     }
                 }
             });
@@ -935,9 +954,15 @@ public class SwanController extends Controller{
     public Result testUnregisterTestValueSwan(){
 
 
-        String id = "2345";
+        String id = "test1-2345";
+        String id2 = "test2-2345";
+//        String id = "2345";
 
         ExpressionManager.unregisterExpression(id);
+
+
+
+        ExpressionManager.unregisterExpression(id2);
 
         return ok("Unregistered");
 
