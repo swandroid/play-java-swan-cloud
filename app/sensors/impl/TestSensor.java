@@ -39,7 +39,7 @@ public class TestSensor extends AbstractSwanSensor {
                 i ^= 1;
                 System.out.println("DELAY="+DELAY+ " I value="+i);
 
-              updateResult(TestSensor.this,i,System.currentTimeMillis());
+              updateResult(TestSensor.this,i,now);
 
                try {
                     Thread.sleep(DELAY);

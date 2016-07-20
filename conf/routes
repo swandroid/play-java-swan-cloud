@@ -73,9 +73,13 @@ POST /swan/unregister/                          controllers.SwanController.swanP
 
 
 
-GET    /registerloravalue                   controllers.SwanController.testRegisterLoraValueSwan
+GET    /register/lora/value                   controllers.SwanController.testRegisterLoraValueSwan
 
-GET    /unregisterloravalue                  controllers.SwanController.testUnregisterLoraValueSwan
+GET    /unregister/lora/value                  controllers.SwanController.testUnregisterLoraValueSwan
+
+GET    /register/thingspeak/value                   controllers.SwanController.testRegisterThingSpeakValueSwan
+
+GET    /unregister/thingspeak/value                  controllers.SwanController.testUnregisterThingSpeakValueSwan
 
 
 GET    /sensors                  controllers.SwanController.testGetAllSensors
