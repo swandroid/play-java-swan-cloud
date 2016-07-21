@@ -81,5 +81,10 @@ GET    /register/thingspeak/value                   controllers.SwanController.t
 
 GET    /unregister/thingspeak/value                  controllers.SwanController.testUnregisterThingSpeakValueSwan
 
+GET    /register/twitter/value                   controllers.SwanController.testRegisterTwitterValueSwan
+
+GET    /unregister/twitter/value                  controllers.SwanController.testUnregisterTwitterValueSwan
+
+
 
 GET    /sensors                  controllers.SwanController.testGetAllSensors

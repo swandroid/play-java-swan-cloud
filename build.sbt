@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.postgresql" % "postgresql" % "9.4-1204-jdbc42",
   "org.json"%"org.json"%"chargebee-1.0",
-  "javax.mail" % "mail" % "1.4.7"
+  "javax.mail" % "mail" % "1.4.7",
+  "com.twitter" % "hbc-core" % "2.2.0"
 )
 
 

@@ -37,7 +37,7 @@ public class ThingspeakSensor extends AbstractSwanSensor {
 
         public void run() {
             while (!isInterrupted()) {
-                
+
                 long now = System.currentTimeMillis();
 
                 String modifiedValuePath =null;
