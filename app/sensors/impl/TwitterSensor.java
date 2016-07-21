@@ -13,6 +13,7 @@ import credentials.Twitter;
 import sensors.base.AbstractSwanSensor;
 import sensors.base.SensorPoller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -25,6 +26,28 @@ public class TwitterSensor extends AbstractSwanSensor{
 
     private Map<String, TwitterPoller> activeThreads = new HashMap<String, TwitterPoller>();
 
+
+    private Map<String, String> nameList = new HashMap<String, String>();
+
+    ArrayList<String> arrayList = new ArrayList<String>();
+
+    BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
+    StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
+
+    Authentication auth = new OAuth1(Twitter.CONSUMER_KEY, Twitter.CONSUMER_SECRET, Twitter.TOKEN, Twitter.TOKEN_SECRET);
+    // Authentication auth = new BasicAuth(username, password);
+
+    // Create a new BasicClient. By default gzip is enabled.
+    Client client = new ClientBuilder()
+            .hosts(Constants.STREAM_HOST)
+            .endpoint(endpoint)
+            .authentication(auth)
+            .processor(new StringDelimitedProcessor(queue))
+            .build();
+
+
+
+
     class TwitterPoller extends SensorPoller {
 
 
@@ -36,28 +59,7 @@ public class TwitterSensor extends AbstractSwanSensor{
         public void run() {
             while (!isInterrupted()) {
 
-                BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
-                StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
 
-                endpoint.trackTerms(Lists.newArrayList("twitterapi", "#yolo"));
-
-                Authentication auth = new OAuth1(Twitter.CONSUMER_KEY, Twitter.CONSUMER_SECRET, Twitter.TOKEN, Twitter.TOKEN_SECRET);
-                // Authentication auth = new BasicAuth(username, password);
-
-                // Create a new BasicClient. By default gzip is enabled.
-                Client client = new ClientBuilder()
-                        .hosts(Constants.STREAM_HOST)
-                        .endpoint(endpoint)
-                        .authentication(auth)
-                        .processor(new StringDelimitedProcessor(queue))
-                        .build();
-
-                // Establish a connection
-
-                client.connect();
-
-                // Do whatever needs to be done with messages
-                for (int msgRead = 0; msgRead < 3; msgRead++) {
                     String msg = null;
                     try {
                         msg = queue.take();
@@ -65,9 +67,8 @@ public class TwitterSensor extends AbstractSwanSensor{
                         e.printStackTrace();
                     }
                     System.out.println(msg);
-                }
 
-                client.stop();
+
 
                 //System.out.println("Test poller running");
 
@@ -101,7 +102,21 @@ public class TwitterSensor extends AbstractSwanSensor{
         TwitterPoller twitterPoller = new TwitterPoller(id, valuePath,
                 configuration);
         activeThreads.put(id, twitterPoller);
+
         twitterPoller.start();
+
+        if(client!=null) {
+
+            //client.stop();
+
+            arrayList.add((String) configuration.get("name"));
+            nameList.put(id, (String) configuration.get("name"));
+
+            endpoint.trackTerms(arrayList);
+
+            client.connect();
+
+        }
 
     }
 
@@ -111,6 +126,16 @@ public class TwitterSensor extends AbstractSwanSensor{
         super.unregister(id);
         System.out.println("Unregister sensor called");
         activeThreads.remove(id).interrupt();
+
+        if(nameList.containsKey(id)) {
+            arrayList.remove(nameList.get(id));
+            nameList.remove(id);
+        }
+
+        if(nameList.isEmpty()){
+            client.stop();
+        }
+
 
     }
 

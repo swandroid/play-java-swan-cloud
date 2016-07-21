@@ -864,7 +864,7 @@ public class SwanController extends Controller{
         ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "twitter-3333";
-        String myExpression = "self@twitter:filter?delay='5000'$server_storage=FALSE{ANY,1000}";
+        String myExpression = "self@twitter:filter?delay='5000'#name='twitterapi'$server_storage=FALSE{ANY,1000}";
         try {
             ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
                 @Override
