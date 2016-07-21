@@ -645,9 +645,6 @@ public class SwanController extends Controller{
 
     public Result testRegisterRainValueSwan(){
 
-
-        ExpressionManager expressionManager = new ExpressionManager();
-
         String id = "1234";
         String myExpression = "self@rain:expected_mm{ANY,0}";
         try {
@@ -724,8 +721,6 @@ public class SwanController extends Controller{
     public Result testRegisterRainTriStateSwan(){
 
 
-        ExpressionManager expressionManager = new ExpressionManager();
-
         String id = "1235";
         String myExpression = "self@rain:expected_mm{ANY,1000} > 0.0";
         try {
@@ -749,8 +744,6 @@ public class SwanController extends Controller{
 
     public Result testRegisterTestTriStateSwan(){
 
-
-        ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "2346";
         String myExpression = "self@test:value{ANY,1000} > 0";
@@ -777,8 +770,6 @@ public class SwanController extends Controller{
     public Result testRegisterCurrencyValueSwan(){
 
 
-        ExpressionManager expressionManager = new ExpressionManager();
-
         String id = "3333";
         String myExpression = "self@currency:exchange?from='EUR'#to='USD'$server_storage=FALSE{ANY,1000}";
         try {
@@ -803,8 +794,6 @@ public class SwanController extends Controller{
 
     public Result testRegisterLoraValueSwan(){
 
-
-        ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "lora-3333";
         String myExpression = "self@lora:data?id='09984508'$server_storage=FALSE{ANY,1000}";
@@ -831,8 +820,6 @@ public class SwanController extends Controller{
 
     public Result testRegisterThingSpeakValueSwan(){
 
-
-        ExpressionManager expressionManager = new ExpressionManager();
 
         String id = "ts-3333";
         String myExpression = "self@thingspeak:field?id='45572'#field='3'$server_storage=FALSE{ANY,1000}";
@@ -861,10 +848,8 @@ public class SwanController extends Controller{
     public Result testRegisterTwitterValueSwan(){
 
 
-        ExpressionManager expressionManager = new ExpressionManager();
-
         String id = "twitter-3333";
-        String myExpression = "self@twitter:filter?delay='5000'#name='twitterapi'$server_storage=FALSE{ANY,1000}";
+        String myExpression = "self@twitter:text?delay='5000'#name='#amsterdam'$server_storage=FALSE{ANY,1000}";
         try {
             ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
                 @Override

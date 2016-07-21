@@ -10,6 +10,8 @@ import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 import credentials.Twitter;
+import org.json.JSONException;
+import org.json.JSONObject;
 import sensors.base.AbstractSwanSensor;
 import sensors.base.SensorPoller;
 
@@ -37,6 +39,7 @@ public class TwitterSensor extends AbstractSwanSensor{
     Authentication auth = new OAuth1(Twitter.CONSUMER_KEY, Twitter.CONSUMER_SECRET, Twitter.TOKEN, Twitter.TOKEN_SECRET);
     // Authentication auth = new BasicAuth(username, password);
 
+
     // Create a new BasicClient. By default gzip is enabled.
     Client client = new ClientBuilder()
             .hosts(Constants.STREAM_HOST)
@@ -44,7 +47,6 @@ public class TwitterSensor extends AbstractSwanSensor{
             .authentication(auth)
             .processor(new StringDelimitedProcessor(queue))
             .build();
-
 
 
 
@@ -63,21 +65,32 @@ public class TwitterSensor extends AbstractSwanSensor{
                     String msg = null;
                     try {
                         msg = queue.take();
+
+                        JSONObject jsonObject = new JSONObject(msg);
+                        long now = System.currentTimeMillis();
+                        updateResult(TwitterSensor.this,jsonObject.get(valuePath),now);
+
+
                     } catch (InterruptedException e) {
+                        break;
+                        //e.printStackTrace();
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(msg);
+                //System.out.println(msg);
 
 
 
                 //System.out.println("Test poller running");
 
-                long now = System.currentTimeMillis();
 
 
-                System.out.println("DELAY="+DELAY+ " I value="+1);
 
-                updateResult(TwitterSensor.this,1,now);
+
+
+                //System.out.println("DELAY="+DELAY+ " I value="+1);
+
+
 
                 try {
                     Thread.sleep(DELAY);
@@ -125,7 +138,6 @@ public class TwitterSensor extends AbstractSwanSensor{
 
         super.unregister(id);
         System.out.println("Unregister sensor called");
-        activeThreads.remove(id).interrupt();
 
         if(nameList.containsKey(id)) {
             arrayList.remove(nameList.get(id));
@@ -136,13 +148,16 @@ public class TwitterSensor extends AbstractSwanSensor{
             client.stop();
         }
 
+        activeThreads.remove(id).interrupt();
+
+
 
     }
 
 
     @Override
     public String[] getValuePaths() {
-        return new String[] {"filter"};
+        return new String[] {"text","created_at","id"}; //TODO:add more keys
     }
 
     @Override
