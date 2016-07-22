@@ -68,7 +68,9 @@ public class TwitterSensor extends AbstractSwanSensor{
 
                         JSONObject jsonObject = new JSONObject(msg);
                         long now = System.currentTimeMillis();
-                        updateResult(TwitterSensor.this,jsonObject.get(valuePath),now);
+                        if(jsonObject.getString("text").contains((CharSequence) configuration.get("name"))) {
+                            updateResult(TwitterSensor.this, jsonObject.get(valuePath), now);
+                        }
 
 
                     } catch (InterruptedException e) {
@@ -110,6 +112,25 @@ public class TwitterSensor extends AbstractSwanSensor{
 
         super.register(id,valuePath,configuration,httpConfiguration);
 
+        if(arrayList.isEmpty()) {
+
+            arrayList.add((String) configuration.get("name"));
+            nameList.put(id, (String) configuration.get("name"));
+            endpoint.trackTerms(arrayList);
+            client.connect();
+        }
+        else {
+
+            arrayList.add((String) configuration.get("name"));
+            nameList.put(id, (String) configuration.get("name"));
+
+            endpoint.trackTerms(arrayList);
+
+            client.reconnect();
+        }
+
+
+
         /*getValues().put(valuePath,
                 Collections.synchronizedList(new ArrayList<TimestampedValue>()));*/
         TwitterPoller twitterPoller = new TwitterPoller(id, valuePath,
@@ -118,18 +139,8 @@ public class TwitterSensor extends AbstractSwanSensor{
 
         twitterPoller.start();
 
-        if(client!=null) {
 
-            //client.stop();
 
-            arrayList.add((String) configuration.get("name"));
-            nameList.put(id, (String) configuration.get("name"));
-
-            endpoint.trackTerms(arrayList);
-
-            client.connect();
-
-        }
 
     }
 

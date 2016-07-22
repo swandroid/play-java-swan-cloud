@@ -855,7 +855,25 @@ public class SwanController extends Controller{
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if(newValues!=null && newValues.length>0) {
-                        System.out.println("Twitter Sensor (Value):" + newValues[newValues.length-1].toString());
+                        System.out.println("Twitter Sensor (Value)1:" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        String id1 = "twitter-3334";
+        String myExpression1 = "self@twitter:text?delay='5000'#name='#trump'$server_storage=FALSE{ANY,1000}";
+        try {
+            ExpressionManager.registerValueExpression(id1, (ValueExpression) ExpressionFactory.parse(myExpression1), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("Twitter Sensor (Value)2:" + newValues[newValues.length-1].toString());
                     }
                 }
             });
@@ -1070,6 +1088,11 @@ public class SwanController extends Controller{
         String id = "twitter-3333";
 
         ExpressionManager.unregisterExpression(id);
+
+
+        String id1 = "twitter-3334";
+
+        ExpressionManager.unregisterExpression(id1);
 
         return ok("Unregistered");
 
