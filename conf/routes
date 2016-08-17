@@ -89,4 +89,10 @@ GET    /register/twitter/tristate                   controllers.SwanController.t
 
 GET    /unregister/twitter/tristate                  controllers.SwanController.testUnregisterTwitterTriStateSwan
 
+
+GET    /register/guardian/value                   controllers.SwanController.testRegisterGuardianValueSwan
+
+GET    /unregister/guardian/value                  controllers.SwanController.testUnregisterGuardianValueSwan
+
+
 GET    /sensors                  controllers.SwanController.testGetAllSensors

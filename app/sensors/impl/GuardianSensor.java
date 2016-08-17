@@ -27,14 +27,12 @@ public class GuardianSensor extends AbstractSwanSensor{
 
     class GuardianPoller extends SensorPoller{
 
-
-
         protected GuardianPoller(String id, String valuePath, HashMap configuration) {
             super(id, valuePath, configuration);
         }
 
 
-        String url;
+        String url = BASE_URL;
 
 
         public void run() {
@@ -81,18 +79,11 @@ public class GuardianSensor extends AbstractSwanSensor{
                         JSONObject jsonObject = new JSONObject(jsonData);
 
                         Object result = null;
-                        int length=0;
 
-                        if(valuePath.contains("field")) {
+                        result = jsonObject.getJSONObject("response").getJSONArray("results").getJSONObject(0).get(valuePath);
 
-                            length = jsonObject.getJSONArray("feeds").length();
-                            //result = jsonObject.getJSONArray("feeds").getJSONObject(length-1).get(modifiedValuePath);
-                        }
-                        else{
-                            result = jsonObject.getJSONObject("channel").get(valuePath);
-                        }
 
-                        System.out.println("dataaaaa "+result+ "length"+length);
+                        //System.out.println("dataaaaa:"+result);
 
                         updateResult(GuardianSensor.this,result,now);
 
@@ -146,7 +137,7 @@ public class GuardianSensor extends AbstractSwanSensor{
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{"news"};
+        return new String[]{"id","type","webTitle","webUrl","sectionName"};
     }
 
     @Override
@@ -156,7 +147,7 @@ public class GuardianSensor extends AbstractSwanSensor{
 
     @Override
     public String[] getConfiguration() {
-        return new String[]{"tag"};
+        return new String[]{"delay"};
     }
 
 }
