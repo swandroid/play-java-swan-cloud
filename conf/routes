@@ -85,6 +85,8 @@ GET    /register/twitter/value                   controllers.SwanController.test
 
 GET    /unregister/twitter/value                  controllers.SwanController.testUnregisterTwitterValueSwan
 
+GET    /register/twitter/tristate                   controllers.SwanController.testRegisterTwitterTriStateSwan
 
+GET    /unregister/twitter/tristate                  controllers.SwanController.testUnregisterTwitterTriStateSwan
 
 GET    /sensors                  controllers.SwanController.testGetAllSensors

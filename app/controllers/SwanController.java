@@ -290,32 +290,33 @@ public class SwanController extends Controller{
                         public void onNewState(String strippedId, long timestamp, TriState newState) {
 
 
-                            JSONObject jsonObject = new JSONObject();
+                            if(newState.equals("true")) {
+                                JSONObject jsonObject = new JSONObject();
 
 
-                            try {
-                                jsonObject.put("id", strippedId+ finalStrippedPartId);
-                                jsonObject.put("action", "register-tristate");
-                                //jsonObject.put("data",newValues[0]);
+                                try {
+                                    jsonObject.put("id", strippedId + finalStrippedPartId);
+                                    jsonObject.put("action", "register-tristate");
+                                    //jsonObject.put("data",newValues[0]);
 
-                                interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
+                                    interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
-                                result.setDeferUntilGuaranteed(false);
+                                    result.setDeferUntilGuaranteed(false);
 
-                                
-                                jsonObject.put("data", Converter.objectToString(result));
 
-                                //jsonObject.put("data",newValues[0].getValue());
-                                //jsonObject.put("timestamp",newValues[0].getTimestamp());
+                                    jsonObject.put("data", Converter.objectToString(result));
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                    //jsonObject.put("data",newValues[0].getValue());
+                                    //jsonObject.put("timestamp",newValues[0].getTimestamp());
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
                             }
-
-                            sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
-
                         }
                     });
 
@@ -866,12 +867,13 @@ public class SwanController extends Controller{
         }
 
 
+
         String id1 = "twitter-3334";
         String myExpression1 = "self@twitter:text?delay='5000'#name='#trump'$server_storage=FALSE{ANY,1000}";
         try {
             ExpressionManager.registerValueExpression(id1, (ValueExpression) ExpressionFactory.parse(myExpression1), new ValueExpressionListener() {
                 @Override
-                public void onNewValues(String id, TimestampedValue[] newValues) {
+                public void onNewValues(String id1, TimestampedValue[] newValues) {
                     if(newValues!=null && newValues.length>0) {
                         System.out.println("Twitter Sensor (Value)2:" + newValues[newValues.length-1].toString());
                     }
@@ -889,6 +891,30 @@ public class SwanController extends Controller{
     }
 
 
+    public Result testRegisterTwitterTriStateSwan(){
+
+
+        String id = "twitter-tristate-3333";
+        String myExpression = "self@twitter:text?delay='5000'#name='#trump'$server_storage=FALSE{ANY,1000} contains 'Donald'";
+        try {
+            ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
+                @Override
+                public void onNewState(String id, long timestamp, TriState newState) {
+
+                    //SendEmail.sendEmail();
+
+                    System.out.println("TwitterSensor (TriState):"+newState);
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+        return ok("Registered");
+
+    }
 
 
 
@@ -1093,6 +1119,18 @@ public class SwanController extends Controller{
         String id1 = "twitter-3334";
 
         ExpressionManager.unregisterExpression(id1);
+
+        return ok("Unregistered");
+
+    }
+
+    public Result testUnregisterTwitterTriStateSwan(){
+
+
+        String id = "twitter-tristate-3333";
+
+        ExpressionManager.unregisterExpression(id);
+
 
         return ok("Unregistered");
 

@@ -56,6 +56,7 @@ public abstract class AbstractSwanSensor implements SensorInterface {
 
             System.out.println("putValueTrimSize:"+value);
             try {
+                //TODO: Two id's with same valupath and different configuration gives different result. This is not handled currently.
                 getValues().get(valuePath).add(new TimestampedValue(value, now));
             } catch (OutOfMemoryError e) {
                 onDestroySensor();
@@ -68,17 +69,6 @@ public abstract class AbstractSwanSensor implements SensorInterface {
             //    notifyDataChanged(valuePath);
             // }
 
-    }
-
-    //TODO: remove this method once sensor poller is ready
-    protected boolean valueChange(Object previousValue, Object value){
-
-        if(previousValue==null || !previousValue.equals(value)){
-            return true;
-
-        }
-
-        return false;
     }
 
 
