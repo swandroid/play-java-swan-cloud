@@ -290,7 +290,7 @@ public class SwanController extends Controller{
                         public void onNewState(String strippedId, long timestamp, TriState newState) {
 
 
-                            if(newState.toString().contentEquals("true")) {
+                            //if(newState.toString().contentEquals("true")) {
                                 JSONObject jsonObject = new JSONObject();
 
 
@@ -316,7 +316,7 @@ public class SwanController extends Controller{
                                 }
 
                                 sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
-                            }
+                            //}
                         }
                     });
 
