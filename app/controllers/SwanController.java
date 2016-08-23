@@ -249,8 +249,6 @@ public class SwanController extends Controller{
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
                                 }
 
 
@@ -310,8 +308,6 @@ public class SwanController extends Controller{
                                     jsonObject.put("timestamp",timestamp);
 
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
                                     e.printStackTrace();
                                 }
 
