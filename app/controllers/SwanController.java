@@ -299,7 +299,7 @@ public class SwanController extends Controller{
                                     jsonObject.put("action", "register-tristate");
                                     //jsonObject.put("data",newValues[0]);
 
-                                    interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
+                                    //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
                                    // result.setDeferUntilGuaranteed(false);
 
