@@ -288,7 +288,7 @@ public class SwanController extends Controller{
                         public void onNewState(String strippedId, long timestamp, TriState newState) {
 
 
-                            if(newState.equals(TriState.TRUE)) {
+                            if(newState.equals(TriState.TRUE) || newState.equals(TriState.FALSE)) {
                                 JSONObject jsonObject = new JSONObject();
 
 
