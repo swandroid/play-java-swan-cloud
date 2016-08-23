@@ -240,12 +240,12 @@ public class SwanController extends Controller{
                                     jsonObject.put("action", "register-value");
                                     //jsonObject.put("data",newValues[0]);
 
-                                    interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues, newValues[0].getTimestamp());
+                                    //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues, newValues[0].getTimestamp());
 
-                                    jsonObject.put("data", Converter.objectToString(result));
+                                    //jsonObject.put("data", Converter.objectToString(result));
 
-                                    //jsonObject.put("data",newValues[0].getValue());
-                                    //jsonObject.put("timestamp",newValues[0].getTimestamp());
+                                    jsonObject.put("data",newValues[0].getValue());
+                                    jsonObject.put("timestamp",newValues[0].getTimestamp());
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -301,13 +301,13 @@ public class SwanController extends Controller{
 
                                     interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
-                                    result.setDeferUntilGuaranteed(false);
+                                   // result.setDeferUntilGuaranteed(false);
 
 
-                                    jsonObject.put("data", Converter.objectToString(result));
+                                  //  jsonObject.put("data", Converter.objectToString(result));
 
-                                    //jsonObject.put("data",newValues[0].getValue());
-                                    //jsonObject.put("timestamp",newValues[0].getTimestamp());
+                                   jsonObject.put("data",newState);
+                                    jsonObject.put("timestamp",timestamp);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -390,7 +390,7 @@ public class SwanController extends Controller{
 
         try {
             jsonObject.put("id",id);
-            jsonObject.put("command","unregister");
+            jsonObject.put("action","unregister");
         } catch (JSONException e) {
             e.printStackTrace();
         }
