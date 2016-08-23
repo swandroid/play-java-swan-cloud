@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 SwanExpression.g 2016-08-23 14:51:21
+// $ANTLR 3.5.2 SwanExpression.g 2016-08-23 16:27:00
 
 package interdroid.swancore.swansong;
 
@@ -1373,11 +1373,11 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = HTTP;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:393:7: ( ( 'http://' ) )
-			// SwanExpression.g:393:9: ( 'http://' )
+			// SwanExpression.g:394:7: ( ( 'http://' ) )
+			// SwanExpression.g:394:9: ( 'http://' )
 			{
-			// SwanExpression.g:393:9: ( 'http://' )
-			// SwanExpression.g:393:10: 'http://'
+			// SwanExpression.g:394:9: ( 'http://' )
+			// SwanExpression.g:394:10: 'http://'
 			{
 			match("http://"); 
 
@@ -1399,11 +1399,11 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = HTTPS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:394:8: ( ( 'https://' ) )
-			// SwanExpression.g:394:11: ( 'https://' )
+			// SwanExpression.g:395:8: ( ( 'https://' ) )
+			// SwanExpression.g:395:11: ( 'https://' )
 			{
-			// SwanExpression.g:394:11: ( 'https://' )
-			// SwanExpression.g:394:12: 'https://'
+			// SwanExpression.g:395:11: ( 'https://' )
+			// SwanExpression.g:395:12: 'https://'
 			{
 			match("https://"); 
 
@@ -1425,10 +1425,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = ID;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:396:5: ( ( HTTP | HTTPS )? ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* ) )
-			// SwanExpression.g:396:9: ( HTTP | HTTPS )? ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* )
+			// SwanExpression.g:397:5: ( ( HTTP | HTTPS )? ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* ) )
+			// SwanExpression.g:397:9: ( HTTP | HTTPS )? ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* )
 			{
-			// SwanExpression.g:396:9: ( HTTP | HTTPS )?
+			// SwanExpression.g:397:9: ( HTTP | HTTPS )?
 			int alt16=3;
 			int LA16_0 = input.LA(1);
 			if ( (LA16_0=='h') ) {
@@ -1454,14 +1454,14 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt16) {
 				case 1 :
-					// SwanExpression.g:396:10: HTTP
+					// SwanExpression.g:397:10: HTTP
 					{
 					mHTTP(); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:396:17: HTTPS
+					// SwanExpression.g:397:17: HTTPS
 					{
 					mHTTPS(); 
 
@@ -1470,8 +1470,8 @@ public class SwanExpressionLexer extends Lexer {
 
 			}
 
-			// SwanExpression.g:396:24: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* )
-			// SwanExpression.g:396:25: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )*
+			// SwanExpression.g:397:24: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )* )
+			// SwanExpression.g:397:25: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '/' | '-' | '.' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )*
 			{
 			if ( (input.LA(1) >= '-' && input.LA(1) <= '/')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -1481,7 +1481,7 @@ public class SwanExpressionLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// SwanExpression.g:396:61: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )*
+			// SwanExpression.g:397:61: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '/' | '-' | '.' )*
 			loop17:
 			while (true) {
 				int alt17=2;
