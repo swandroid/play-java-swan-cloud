@@ -340,7 +340,7 @@ public class SwanController extends Controller{
 
     public String convertExpression(String expression) {
         String convertedExpression = null;
-        if (expression.contains("cloud")) {
+        if (expression.startsWith("cloud")) {
             convertedExpression = expression.replace("cloud", "self");
         }
         else if(expression.contains("http")){
