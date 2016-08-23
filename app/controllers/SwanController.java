@@ -343,6 +343,15 @@ public class SwanController extends Controller{
         if (expression.contains("cloud")) {
             convertedExpression = expression.replace("cloud", "self");
         }
+        else if(expression.contains("http")){
+
+            String[] split_expression = expression.split("@",2);
+
+            if(split_expression.length>1){
+                convertedExpression = "self@"+ split_expression[1];
+            }
+
+        }
         return convertedExpression;
     }
 
