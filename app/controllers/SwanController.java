@@ -283,35 +283,43 @@ public class SwanController extends Controller{
 
 
                     String finalStrippedPartId = strippedPartId;
+
+                    final TriState[] previousTristate = {null};
                     ExpressionManager.registerTriStateExpression(strippedId, (TriStateExpression) ExpressionFactory.parse(convertedExpression), new TriStateExpressionListener() {
                         @Override
                         public void onNewState(String strippedId, long timestamp, TriState newState) {
 
 
                             if(newState.equals(TriState.TRUE) || newState.equals(TriState.FALSE)) {
-                                JSONObject jsonObject = new JSONObject();
 
 
-                                try {
-                                    jsonObject.put("id", strippedId + finalStrippedPartId);
-                                    jsonObject.put("action", "register-tristate");
-                                    //jsonObject.put("data",newValues[0]);
+                                if (previousTristate[0] == null || previousTristate[0] != newState) {
 
-                                    //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
-
-                                   // result.setDeferUntilGuaranteed(false);
+                                    JSONObject jsonObject = new JSONObject();
 
 
-                                  //  jsonObject.put("data", Converter.objectToString(result));
+                                    try {
+                                        jsonObject.put("id", strippedId + finalStrippedPartId);
+                                        jsonObject.put("action", "register-tristate");
+                                        //jsonObject.put("data",newValues[0]);
 
-                                   jsonObject.put("data",newState);
-                                    jsonObject.put("timestamp",timestamp);
+                                        //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                        // result.setDeferUntilGuaranteed(false);
+
+
+                                        //  jsonObject.put("data", Converter.objectToString(result));
+
+                                        jsonObject.put("data", newState);
+                                        jsonObject.put("timestamp", timestamp);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    previousTristate[0] = newState;
+                                    sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
+
                                 }
-
-                                sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
                             }
                         }
                     });
