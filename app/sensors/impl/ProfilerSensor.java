@@ -3,6 +3,12 @@ package sensors.impl;
 import sensors.base.AbstractSwanSensor;
 import sensors.base.SensorPoller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +33,8 @@ public class ProfilerSensor extends AbstractSwanSensor {
         int[] intArray = new int[4];
         int caseScenario=0;
 
+        private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
+
         ProfilerPoller(String id, String valuePath, HashMap configuration) {
             super(id, valuePath, configuration);
         }
@@ -46,6 +54,21 @@ public class ProfilerSensor extends AbstractSwanSensor {
             while (!isInterrupted()) {
 
                 long now = System.currentTimeMillis();
+
+                try {
+                    URLConnection conn = new URL(BASE_URL).openConnection();
+                    BufferedReader r = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    String line = r.readLine();
+
+                } catch (MalformedURLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
 
                 if(caseScenario==0){
                     if(i==0){
