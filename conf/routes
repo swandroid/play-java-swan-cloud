@@ -81,6 +81,10 @@ GET    /register/thingspeak/value                   controllers.SwanController.t
 
 GET    /unregister/thingspeak/value                  controllers.SwanController.testUnregisterThingSpeakValueSwan
 
+GET    /register/thingspeaktest/value                   controllers.SwanController.testRegisterThingSpeakTestValueSwan
+
+GET    /unregister/thingspeaktest/value                  controllers.SwanController.testUnregisterThingSpeakTestValueSwan
+
 GET    /register/twitter/value                   controllers.SwanController.testRegisterTwitterValueSwan
 
 GET    /unregister/twitter/value                  controllers.SwanController.testUnregisterTwitterValueSwan
@@ -89,6 +93,9 @@ GET    /register/twitter/tristate                   controllers.SwanController.t
 
 GET    /unregister/twitter/tristate                  controllers.SwanController.testUnregisterTwitterTriStateSwan
 
+GET    /register/thingspeaktest/tristate                   controllers.SwanController.testRegisterThingSpeakTestTriStateSwan
+
+GET    /unregister/thingspeaktest/tristate                  controllers.SwanController.testUnregisterThingSpeakTestTriStateSwan
 
 GET    /register/guardian/value                   controllers.SwanController.testRegisterGuardianValueSwan
 

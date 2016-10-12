@@ -54,7 +54,7 @@ public abstract class AbstractSwanSensor implements SensorInterface {
                                           final String id, final long now, final Object value /*, final int historySize*/) {
 
 
-            System.out.println("putValueTrimSize:"+value);
+            System.out.println("putValueTrimSize:"+value+" "+valuePath);
             try {
                 //TODO: Two id's with same valupath and different configuration gives different result. This is not handled currently.
                 getValues().get(valuePath).add(new TimestampedValue(value, now));

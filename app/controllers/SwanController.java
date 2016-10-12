@@ -208,6 +208,7 @@ public class SwanController extends Controller{
         String strippedPartId = null;
         String strippedId = null;
 
+        System.out.println("EXPRESSION:     "+expression);
         String convertedExpression = convertExpression(expression);
 
         System.out.println("id:"+id+"\ntoken:"+token+"\nexpression:"+convertedExpression);
@@ -237,7 +238,7 @@ public class SwanController extends Controller{
 
                                 try {
                                     jsonObject.put("id", id);
-                                    jsonObject.put("action", "register-value");
+                                    jsonObject.put("A", "V");
                                     //jsonObject.put("data",newValues[0]);
 
                                     //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues, newValues[0].getTimestamp());
@@ -245,7 +246,7 @@ public class SwanController extends Controller{
                                     //jsonObject.put("data", Converter.objectToString(result));
 
                                     jsonObject.put("data",newValues[0].getValue());
-                                    jsonObject.put("timestamp",newValues[0].getTimestamp());
+                                    jsonObject.put("time",newValues[0].getTimestamp());
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -300,7 +301,7 @@ public class SwanController extends Controller{
 
                                     try {
                                         jsonObject.put("id", strippedId + finalStrippedPartId);
-                                        jsonObject.put("action", "register-tristate");
+                                        jsonObject.put("A", "T");
                                         //jsonObject.put("data",newValues[0]);
 
                                         //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(timestamp, newState);
@@ -311,7 +312,7 @@ public class SwanController extends Controller{
                                         //  jsonObject.put("data", Converter.objectToString(result));
 
                                         jsonObject.put("data", newState);
-                                        jsonObject.put("timestamp", timestamp);
+                                        jsonObject.put("time", timestamp);
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -344,10 +345,11 @@ public class SwanController extends Controller{
 
     public String convertExpression(String expression) {
         String convertedExpression = null;
-        if (expression.startsWith("cloud")) {
+        String strippedExpression = expression.replaceAll("[\\[\\]()]","");
+        if (strippedExpression.startsWith("cloud")) {
             convertedExpression = expression.replace("cloud", "self");
         }
-        else if(expression.contains("http")){
+        else if(strippedExpression.contains("http")){
 
             String[] split_expression = expression.split("@",2);
 
@@ -858,6 +860,34 @@ public class SwanController extends Controller{
     }
 
 
+    public Result testRegisterThingSpeakTestValueSwan(){
+
+
+        String id = "ts-3334";
+        String myExpression = "self@thingspeaktest:'6'{ANY,1000}";
+        try {
+            ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if(newValues!=null && newValues.length>0) {
+                        System.out.println("Thingspeak Sensor Test (Value):" + newValues[newValues.length-1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+
+        return ok("Registered");
+
+    }
+
+
+
+
     public Result testRegisterGuardianValueSwan(){
 
 
@@ -943,6 +973,30 @@ public class SwanController extends Controller{
                     //SendEmail.sendEmail();
 
                     System.out.println("TwitterSensor (TriState):"+newState);
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+        return ok("Registered");
+
+    }
+
+
+    public Result testRegisterThingSpeakTestTriStateSwan(){
+
+
+        String id = "ts-3335";
+        String myExpression = "self@thingspeaktest:a{ANY,1000} > 10.0";
+        try {
+            ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
+                @Override
+                public void onNewState(String id, long timestamp, TriState newState) {
+
+                    System.out.println("thingspeaktest (TriState):"+newState);
                 }
             });
         } catch (SwanException e) {
@@ -1147,6 +1201,17 @@ public class SwanController extends Controller{
     }
 
 
+    public Result testUnregisterThingSpeakTestValueSwan(){
+
+
+        String id = "ts-3334";
+
+        ExpressionManager.unregisterExpression(id);
+
+        return ok("Unregistered");
+
+    }
+
     public Result testUnregisterGuardianValueSwan(){
 
 
@@ -1186,6 +1251,20 @@ public class SwanController extends Controller{
         return ok("Unregistered");
 
     }
+
+    public Result testUnregisterThingSpeakTestTriStateSwan(){
+
+
+        String id = "ts-3335";
+
+        ExpressionManager.unregisterExpression(id);
+
+
+        return ok("Unregistered");
+
+    }
+
+
 
     public Result testUnregisterCurrencyTriStateSwan(){
 

@@ -8,21 +8,18 @@ import sensors.base.SensorPoller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Roshan Bharath Das on 26/08/16.
+ * Created by Roshan Bharath Das on 07/10/16.
  */
-public class ProfilerSensor extends AbstractSwanSensor {
-
+public class ProfileraSensor extends AbstractSwanSensor{
     //Test case is if x>1 caseScenario 0 is worst and caseScenario 1 is best
 
-    private Map<String, ProfilerPoller> activeThreads = new HashMap<String, ProfilerPoller>();
+    private Map<String, ProfileraSensor.ProfilerPoller> activeThreads = new HashMap<String, ProfileraSensor.ProfilerPoller>();
 
 
     public static final String VALUE = "value";
@@ -97,7 +94,7 @@ public class ProfilerSensor extends AbstractSwanSensor {
 
                     System.out.println("DELAY=" + DELAY + " I value=" + i);
 
-                    updateResult(ProfilerSensor.this, i, now);
+                    updateResult(ProfileraSensor.this, i, now);
 
                     try {
                         Thread.sleep(DELAY);
@@ -116,42 +113,42 @@ public class ProfilerSensor extends AbstractSwanSensor {
         }
 
     }
-            @Override
-            public void register(String id, String valuePath, HashMap configuration, HashMap httpConfiguration) {
+    @Override
+    public void register(String id, String valuePath, HashMap configuration, HashMap httpConfiguration) {
 
-                super.register(id,valuePath,configuration,httpConfiguration);
+        super.register(id,valuePath,configuration,httpConfiguration);
 
-                ProfilerPoller profilerPoller = new ProfilerPoller(id, valuePath,
-                        configuration);
-                activeThreads.put(id, profilerPoller);
-                profilerPoller.start();
+        ProfileraSensor.ProfilerPoller profilerPoller = new ProfileraSensor.ProfilerPoller(id, valuePath,
+                configuration);
+        activeThreads.put(id, profilerPoller);
+        profilerPoller.start();
 
-            }
+    }
 
-            @Override
-            public void unregister(String id) {
+    @Override
+    public void unregister(String id) {
 
-                super.unregister(id);
-                System.out.println("Unregister sensor called");
-                activeThreads.remove(id).interrupt();
+        super.unregister(id);
+        System.out.println("Unregister sensor called");
+        activeThreads.remove(id).interrupt();
 
-            }
-
-
-            @Override
-            public String[] getValuePaths()  {
-                return new String[]{ VALUE};
-            }
-
-            @Override
-            public String getEntity() {
-                return "profiler";
-            }
-
-            @Override
-            public String[] getConfiguration() {
-                return new String[] {"delay","case"};
-            }
+    }
 
 
-        }
+    @Override
+    public String[] getValuePaths()  {
+        return new String[]{ VALUE};
+    }
+
+    @Override
+    public String getEntity() {
+        return "profilera";
+    }
+
+    @Override
+    public String[] getConfiguration() {
+        return new String[] {"delay","case"};
+    }
+
+
+}
