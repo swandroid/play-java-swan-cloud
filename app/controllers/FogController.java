@@ -2,6 +2,7 @@ package controllers;
 
 import actuator.Actuator;
 import actuator.SendDataToWeb;
+import actuator.SendDataToWebViaSocket;
 import actuator.SendFacebookMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import engine.ExpressionManager;
@@ -67,7 +68,8 @@ public class FogController extends Controller {
         }
         else{
 
-            SendDataToWeb sendDataToWeb =new SendDataToWeb(acutatorURL[0],id);
+            //SendDataToWeb sendDataToWeb =new SendDataToWeb(acutatorURL[0],id);
+            SendDataToWebViaSocket sendDataToWeb =new SendDataToWebViaSocket(acutatorURL[0],id);
             controlSWANExpression(command,subExpression[0], id, senderId, sendDataToWeb, actuatorSubExpression);
 
 
@@ -94,9 +96,6 @@ public class FogController extends Controller {
                         @Override
                         public void onNewValues(String id, TimestampedValue[] newValues) {
                             if (newValues != null && newValues.length > 0) {
-                                //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
-                                //sendFacebookMessage.sendResult(senderid, newValues[0].toString(), ws);
-                                // sendPhoneResult.sendResult(jsonObject.toString(), token, ws);
                                 JSONObject jsonObject = new JSONObject();
 
 
@@ -209,6 +208,68 @@ public class FogController extends Controller {
         return ok();
 
     }
+
+
+    public Result testFogSensor() {
+
+
+        JsonNode json = request().body().asJson();
+
+
+        String expression = json.findPath("expression").textValue();
+
+        String command = json.findPath("command").textValue();
+
+        String id = json.findPath("id").textValue();
+
+
+        if (command.contains("register-value")) {
+
+            if (expression != null && id != null) {
+                try {
+                    ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(expression), new ValueExpressionListener() {
+                        @Override
+                        public void onNewValues(String id, TimestampedValue[] newValues) {
+                            if (newValues != null && newValues.length > 0) {
+                                System.out.println("Fog Test Sensor (Value):" + newValues[newValues.length-1].toString());
+                            }
+                        }
+                    });
+                } catch (SwanException e) {
+                    e.printStackTrace();
+                } catch (ExpressionParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else if (command.contains("register-tristate")) {
+
+            if (expression != null && id != null) {
+                try {
+                    ExpressionManager.registerTriStateExpression(id, (TriStateExpression) ExpressionFactory.parse(expression), new TriStateExpressionListener() {
+                        @Override
+                        public void onNewState(String id, long timestamp, TriState newState) {
+                            System.out.println("Fog Test Sensor (Tristate):" + newState.toString());
+                        }
+                    });
+                } catch (SwanException e) {
+                    e.printStackTrace();
+                } catch (ExpressionParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else if (command.contains("unregister")) {
+
+            ExpressionManager.unregisterExpression(id);
+        }
+
+
+        return ok();
+    }
+
+
+
 
 
 }

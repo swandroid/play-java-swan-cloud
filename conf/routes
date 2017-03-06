@@ -109,3 +109,6 @@ GET    /sensors                  controllers.SwanController.testGetAllSensors
 POST /swan/fog/request/                              controllers.FogController.requestToFog
 
 POST /swan/fog/receive/                              controllers.FogController.receiveFromFog
+
+POST /swan/fog/test/                              controllers.FogController.testFogSensor
+
