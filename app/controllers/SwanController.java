@@ -429,9 +429,6 @@ public class SwanController extends Controller{
             saveSwanSong(tokenId,expressionId,expressionString);
 
 
-
-
-
             try {
 
                 Expression expression = ExpressionFactory.parse(expressionString);

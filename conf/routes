@@ -103,3 +103,9 @@ GET    /unregister/guardian/value                  controllers.SwanController.te
 
 
 GET    /sensors                  controllers.SwanController.testGetAllSensors
+
+
+
+POST /swan/fog/request/                              controllers.FogController.requestToFog
+
+POST /swan/fog/receive/                              controllers.FogController.receiveFromFog
