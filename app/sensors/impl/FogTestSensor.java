@@ -53,25 +53,23 @@ public class FogtestSensor extends AbstractSwanSensor {
                 try {
 
                     System.out.println("Accept is done");
-                  /*  StringBuilder sb = new StringBuilder();
-                    String line;
-                    InputStreamReader isr = new InputStreamReader(socket.getInputStream());
-                    BufferedReader reader = new BufferedReader(isr);
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                        System.out.println("Received as a sensor "+sb.toString());
-                    }
 
-                    JSONObject json = new JSONObject(sb.toString());
-
-                    System.out.println("Received as a sensor "+json.toString());*/
-
-                    //read from socket to ObjectInputStream object
-
-                    //convert ObjectInputStream object to String
                     String message = (String) ois.readObject();
 
-                    System.out.println("message: "+message);
+                    try {
+                        JSONObject json = new JSONObject(message);
+
+                        //System.out.println("message json: "+json.getString("valuepath"));
+                        //System.out.println("message json: "+message);
+
+                        updateResult(FogtestSensor.this,json.get("data"),json.getLong("time"));
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
 
 
 
@@ -99,6 +97,8 @@ public class FogtestSensor extends AbstractSwanSensor {
                 }
                */
             }
+
+
         }
 
 
