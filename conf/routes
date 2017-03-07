@@ -112,3 +112,7 @@ POST /swan/fog/receive/                              controllers.FogController.r
 
 POST /swan/fog/test/                              controllers.FogController.testFogSensor
 
+POST /swan/fog/generate/                              controllers.FogController.generateFogSensor
+
+
+

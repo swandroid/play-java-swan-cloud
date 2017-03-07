@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import play.libs.ws.WSClient;
 import play.mvc.Controller;
 import play.mvc.Result;
+import sensors.base.GenerateFogSensor;
 
 import javax.inject.Inject;
 
@@ -269,6 +270,22 @@ public class FogController extends Controller {
     }
 
 
+    public Result generateFogSensor() {
+
+
+        JsonNode json = request().body().asJson();
+
+        try {
+            JSONObject jsonObject = new JSONObject(json.toString());
+            GenerateFogSensor.generateSensor(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return ok();
+    }
 
 
 

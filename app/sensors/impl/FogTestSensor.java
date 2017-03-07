@@ -48,19 +48,12 @@ public class FogtestSensor extends AbstractSwanSensor {
         public void run() {
             while (!isInterrupted()) {
 
-                System.out.println("Starting fog test sensor");
-
                 try {
-
-                    System.out.println("Accept is done");
 
                     String message = (String) ois.readObject();
 
                     try {
                         JSONObject json = new JSONObject(message);
-
-                        //System.out.println("message json: "+json.getString("valuepath"));
-                        //System.out.println("message json: "+message);
 
                         updateResult(FogtestSensor.this,json.get("data"),json.getLong("time"));
 
@@ -69,33 +62,12 @@ public class FogtestSensor extends AbstractSwanSensor {
                         e.printStackTrace();
                     }
 
-
-
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }  catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
-
-                //System.out.println("Test poller running");
-
-               // long now = System.currentTimeMillis();
-
-                //i ^= 1;
-
-                //System.out.println("DELAY="+DELAY+ " I value="+i);
-
-                //updateResult(FogtestSensor.this,i,now);
-
-              /*  try {
-                    Thread.sleep(DELAY);
-                } catch (InterruptedException e) {
-                    break;
-                }
-               */
             }
 
 
