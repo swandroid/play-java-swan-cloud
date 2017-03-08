@@ -5,6 +5,7 @@ import actuator.SendDataToWeb;
 import actuator.SendDataToWebViaSocket;
 import actuator.SendFacebookMessage;
 import com.fasterxml.jackson.databind.JsonNode;
+//import com.rabbitmq.client.*;
 import com.rabbitmq.client.*;
 import engine.ExpressionManager;
 import engine.SwanException;
@@ -408,6 +409,7 @@ public class FogController extends Controller {
                         throws IOException {
                     String combinedExpression = new String(body, "UTF-8");
 
+                    System.out.println(" Received subscribed data");
 
                     String[] subExpression = combinedExpression.split("!");
 

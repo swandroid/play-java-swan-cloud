@@ -115,4 +115,10 @@ POST /swan/fog/test/                              controllers.FogController.test
 POST /swan/fog/generate/                              controllers.FogController.generateFogSensor
 
 
+POST /swan/fog/publish/                              controllers.FogController.publishExpression
+POST /swan/fog/subscribe/                              controllers.FogController.subscribeExpression
+
+
+
+
 
