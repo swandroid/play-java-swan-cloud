@@ -18,19 +18,21 @@ public class SendDataToWebViaSocket implements Actuator {
 
     private String url;
 
+    private int port;
+
     private String applicationKey;
 
     Socket clientSocket;
 
     ObjectOutputStream out = null;
 
-    public SendDataToWebViaSocket(String url, String applicationKey){
+    public SendDataToWebViaSocket(String url, int port, String applicationKey){
 
         this.url =url;
         this.applicationKey = applicationKey;
-
+        this.port =port;
         try {
-            clientSocket = new Socket(url, 6789);
+            clientSocket = new Socket(url, port);
             out = new ObjectOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

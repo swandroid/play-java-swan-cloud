@@ -34,7 +34,7 @@ public class SensorPoller extends Thread {
 
 
 
-    protected void updateResult(AbstractSwanSensor abstractSwanSensor, Object currentValue, long now){
+    public void updateResult(AbstractSwanSensor abstractSwanSensor, Object currentValue, long now){
 
 
         if(valueChange(previousValue,currentValue)) {

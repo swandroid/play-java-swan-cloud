@@ -5,6 +5,7 @@ import actuator.SendDataToWeb;
 import actuator.SendDataToWebViaSocket;
 import actuator.SendFacebookMessage;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.rabbitmq.client.*;
 import engine.ExpressionManager;
 import engine.SwanException;
 import engine.TriStateExpressionListener;
@@ -17,7 +18,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import sensors.base.GenerateFogSensor;
 
+
 import javax.inject.Inject;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Roshan Bharath Das on 05/03/2017.
@@ -53,14 +57,28 @@ public class FogController extends Controller {
         //actuatorexpression for sending to another server in the fog
 
 
-
+        controlActuation(expression,id,command,senderId);
         //TO DO: String the actuator part from the expression
 
         //subExpression[0] = swan expression
         //subExpression[1] = actuator expression
+
+
+        return ok();
+
+    }
+
+
+
+    public void controlActuation(String expression, String id, String command, String senderId){
+
+
+
+
         String[] subExpression = expression.split("±±±");
-        String[] acutatorURL = subExpression[1].split("@");
-        String[] actuatorSubExpression = acutatorURL[1].split("[:#]");
+        String[] acutatorLocation = subExpression[1].split("@");
+        String[] acutatorURL = acutatorLocation[0].split(":");
+        String[] actuatorSubExpression = acutatorLocation[1].split("[:#]");
 
 
 
@@ -69,18 +87,16 @@ public class FogController extends Controller {
         }
         else{
 
-            //SendDataToWeb sendDataToWeb =new SendDataToWeb(acutatorURL[0],id);
-            SendDataToWebViaSocket sendDataToWeb =new SendDataToWebViaSocket(acutatorURL[0],id);
+            //SendDataToWeb sendDataToWeb =new SendDataToWeb(acutatorLocation[0],id);
+            SendDataToWebViaSocket sendDataToWeb =new SendDataToWebViaSocket(acutatorURL[0],Integer.parseInt(acutatorURL[1]),id);
             controlSWANExpression(command,subExpression[0], id, senderId, sendDataToWeb, actuatorSubExpression);
 
 
         }
 
 
-        return ok();
 
     }
-
 
 
 
@@ -287,6 +303,132 @@ public class FogController extends Controller {
         return ok();
     }
 
+
+
+    public Result publishExpression() {
+
+
+        JsonNode json = request().body().asJson();
+
+        String expression = json.findPath("expression").textValue();
+
+        String command = json.findPath("command").textValue();
+
+        String combination = command+"!"+expression;
+
+        String id= json.findPath("id").textValue();
+
+
+        publish(id,combination);
+
+        return ok();
+    }
+
+
+    public Result subscribeExpression() {
+
+
+        JsonNode json = request().body().asJson();
+
+        String host = json.findPath("host").textValue();
+
+        int port = json.findPath("port").intValue();
+
+        String id= json.findPath("id").textValue();
+
+        subscribe(id,host,port);
+
+        return ok();
+    }
+
+
+
+    public void publish(String topicName, String expression) {
+
+        final String EXCHANGE_NAME = "topic_logs";
+
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+
+        Connection connection = null;
+        try {
+            connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+            String routingKey = topicName;
+            String message = expression;
+            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+
+
+            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception ignore) {
+                }
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+
+    public void subscribe(String topicName, String hostname, int port) {
+
+        final String EXCHANGE_NAME = "topic_logs";
+
+        ConnectionFactory factory = new ConnectionFactory();
+        //TODO: change to hostname
+        factory.setHost("localhost");
+
+        Connection connection = null;
+        try {
+            connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+            String queueName = channel.queueDeclare().getQueue();
+
+            channel.queueBind(queueName, EXCHANGE_NAME, topicName);
+
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+
+            Consumer consumer = new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+                        throws IOException {
+                    String combinedExpression = new String(body, "UTF-8");
+
+
+                    String[] subExpression = combinedExpression.split("!");
+
+                    controlActuation(subExpression[1],topicName,subExpression[1],"test");
+
+
+
+                }
+            };
+
+            channel.basicConsume(queueName, true, consumer);
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }
