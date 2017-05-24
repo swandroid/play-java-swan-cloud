@@ -387,7 +387,7 @@ ANY :   ('ANY'|'any');
 NONE    :   ('NONE'|'none');
 MAX :   ('MAX'|'max');
 MIN :   ('MIN'|'min');
-MEAN    :   ('MEAN'|'mean');
+MEAN    :   ('MEAN'|' mean');
 MEDIAN  :   ('MEDIAN'|'median');
 
 

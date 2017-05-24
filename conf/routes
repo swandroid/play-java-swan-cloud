@@ -118,6 +118,11 @@ POST /swan/fog/generate/                              controllers.FogController.
 POST /swan/fog/publish/                              controllers.FogController.publishExpression
 POST /swan/fog/subscribe/                              controllers.FogController.subscribeExpression
 
+POST /swan/test/send/                              controllers.SwanController.sendDataToPhone
+
+POST /swan/test/register/                              controllers.SwanController.swanPhoneTestRegister
+POST /swan/test/unregister/                              controllers.SwanController.swanPhoneTestUnregister
+
 
 
 

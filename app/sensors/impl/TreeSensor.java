@@ -19,7 +19,7 @@ public class TreeSensor extends AbstractSwanSensor {
 	public static final String[] VALUEPATH = {"branch"};
 	public static final String[] CONFIGURATION = {"leaves"};
 	public static final String ENTITY = "tree";
-	public static final int PORT = 7782;
+	public static final int PORT = 6782;
 
 
 

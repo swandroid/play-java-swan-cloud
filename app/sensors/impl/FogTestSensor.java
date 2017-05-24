@@ -36,7 +36,7 @@ public class FogtestSensor extends AbstractSwanSensor {
         FogTestPoller(String id, String valuePath, HashMap configuration) {
             super(id, valuePath, configuration);
             try {
-                server = new ServerSocket(6789);
+                server = new ServerSocket(7782);
                 socket = server.accept();
                 ois = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {

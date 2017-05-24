@@ -20,8 +20,11 @@ public class TestSensor extends AbstractSwanSensor {
 
     class TestPoller extends SensorPoller {
 
-        int i=0;
+        float i=0;
 
+        Random rand = new Random();
+        float minX = 0.0f;
+        float maxX = 1000.0f;
 
         TestPoller(String id, String valuePath, HashMap configuration) {
             super(id, valuePath, configuration);
@@ -36,7 +39,10 @@ public class TestSensor extends AbstractSwanSensor {
                 long now = System.currentTimeMillis();
 
 
-                i ^= 1;
+                //i ^= 1;
+
+                i = rand.nextFloat() * (maxX - minX) + minX;
+
                 System.out.println("DELAY="+DELAY+ " I value="+i);
 
               updateResult(TestSensor.this,i,now);

@@ -40,6 +40,7 @@ import static credentials.Firebase.FIREBASE_URL;
 //import static credentials.Firebase.PHONE_TOKEN;
 
 
+
 /**
  * Created by Roshan Bharath Das on 24/05/16.
  */
@@ -47,11 +48,99 @@ public class SwanController extends Controller{
 
     @Inject WSClient ws;
 
+    String publicTokenId = null;
+    String publicExpressionId = null;
+
     ArrayList<SensorValueExpression> sensorValueExpressionList;
 
 
     public Result index() {
         return ok(index.render("Your new application is ready."));
+    }
+
+
+
+
+    public Result sendDataToPhone(){
+
+        JsonNode json = request().body().asJson();
+
+
+        long time = json.findPath("time").longValue();
+        Object data = json.findPath("field1");
+        //String id = json.findPath("id").textValue();
+
+        System.out.println(json.toString());
+        //{"time":1491306225685,"field1":0,"id":"1236"}
+
+        JSONObject jsonObject = new JSONObject();
+
+
+        try {
+            jsonObject.put("id", publicExpressionId);
+            jsonObject.put("A", "V");
+            //jsonObject.put("data",newValues[0]);
+
+            //interdroid.swancore.swansong.Result result = new interdroid.swancore.swansong.Result(newValues, newValues[0].getTimestamp());
+
+            //jsonObject.put("data", Converter.objectToString(result));
+
+            jsonObject.put("data",data);
+            jsonObject.put("time",time);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        if (publicTokenId != null && publicExpressionId!=null) {
+            SendPhoneResult sendPhoneResult = new SendPhoneResult();
+            //System.out.println("Rain Sensor (Value):" + newValues[newValues.length - 1].toString());
+            sendPhoneResult.sendResult(jsonObject.toString(), publicTokenId, ws);
+
+        }
+
+        return ok();
+
+    }
+
+
+
+    public Result swanPhoneTestRegister() {
+
+        JsonNode json = request().body().asJson();
+
+        String id = json.findPath("id").textValue();
+
+        String token = json.findPath("token").textValue();
+
+        //For testing- remove after vladim
+        publicTokenId = token;
+        publicExpressionId = id;
+
+        System.out.println(json.toString());
+
+        String expression = json.findPath("expression").textValue();
+
+        return ok();
+
+    }
+
+    public Result swanPhoneTestUnregister() {
+
+        JsonNode json = request().body().asJson();
+
+        String id = json.findPath("id").textValue();
+
+        String token = json.findPath("token").textValue();
+        //remove after vladimir's test
+
+        System.out.println(json.toString());
+
+        publicTokenId = null;
+        publicExpressionId =null;
+
+        return ok();
     }
 
 
@@ -203,6 +292,10 @@ public class SwanController extends Controller{
         String id = json.findPath("id").textValue();
 
         String token = json.findPath("token").textValue();
+
+        //For testing- remove after vladimir's test
+        publicTokenId = token;
+
         String expression = json.findPath("expression").textValue();
 
         String strippedPartId = null;
@@ -368,6 +461,8 @@ public class SwanController extends Controller{
         String id = json.findPath("id").textValue();
 
         String token = json.findPath("token").textValue();
+        //remove after vladimir's test
+        publicTokenId = null;
 
         String strippedId = null;
 
@@ -686,7 +781,7 @@ public class SwanController extends Controller{
 
 
         String id = "test1-2345";
-        String myExpression = "self@test:value{ANY,1000}";
+        String myExpression = "self@test:value?delay='1'{MEDIAN,60000}";
         //String myExpression = "self@test:value?delay='5000'$server_storage=FALSE{ANY,5000}";
 
 

@@ -131,6 +131,9 @@ public class EvaluationEngineService /* implements Runnable */ {
 
                             long end = System.currentTimeMillis();
 
+                            long evaluationTime =(end-start);
+                            System.out.println("Evalutation time: "+evaluationTime);
+
                             // update with statistics: evaluationTime and evaluationDelay
                             head.evaluated((end - start), evaluationDelay);
 
