@@ -124,6 +124,10 @@ POST /swan/test/register/                              controllers.SwanControlle
 POST /swan/test/unregister/                              controllers.SwanController.swanPhoneTestUnregister
 
 
+GET /ws/                            controllers.WebSocketController.socket
 
 
+GET    /register/websocket/value                   controllers.SwanController.testRegisterWebSocketValueSwan
+
+GET    /unregister/websocket/value                  controllers.SwanController.testUnregisterWebSocketValueSwan
 

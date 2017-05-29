@@ -800,7 +800,35 @@ public class SwanController extends Controller{
             e.printStackTrace();
         }
 
+        return ok("Registered");
 
+    }
+    public Result testRegisterWebSocketValueSwan() {
+
+
+        String id = "websocket1-2345";
+        String myExpression = "self@websocket:value?delay='1000'{ANY,1000}";
+        //String myExpression = "self@test:value?delay='5000'$server_storage=FALSE{ANY,5000}";
+
+
+        try {
+            ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+                    if (newValues != null && newValues.length > 0) {
+                        System.out.println("Websocket Sensor (Value):" + newValues[newValues.length - 1].toString());
+                    }
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+        return ok("Registered");
+
+    }
    /*     String id2 = "test2-2345";
         //String myExpression = "self@test:value{ANY,0}";
         String myExpression2 = "self@test:value?delay='10000'$server_storage=FALSE{ANY,10000}";
@@ -822,9 +850,7 @@ public class SwanController extends Controller{
         }
 */
 
-        return ok("Registered");
 
-    }
 
     public Result testRegisterRainTriStateSwan(){
 
@@ -1239,6 +1265,17 @@ public class SwanController extends Controller{
 
 
         ExpressionManager.unregisterExpression(id2);
+
+        return ok("Unregistered");
+
+    }
+
+    public Result testUnregisterWebSocketValueSwan(){
+
+
+        String id = "websocket1-2345";
+
+        ExpressionManager.unregisterExpression(id);
 
         return ok("Unregistered");
 
