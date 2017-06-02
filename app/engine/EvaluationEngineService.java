@@ -4,8 +4,11 @@ import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.ValueExpression;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.*;
 
 import static java.lang.Thread.interrupted;
 
@@ -22,6 +25,7 @@ public class EvaluationEngineService /* implements Runnable */ {
 
         mEvaluationManager = new EvaluationManager();
         // kick off the evaluation thread
+        mTerminationThread.start();
         mEvaluationThread.start();
 
     }
@@ -77,8 +81,11 @@ public class EvaluationEngineService /* implements Runnable */ {
     } */
 
 
+    private final List<Worker> threadList = new ArrayList<>();
+    private ExecutorService executor = Executors.newFixedThreadPool(100);
 
-    Thread mEvaluationThread = new Thread() {
+
+    private Thread mEvaluationThread = new Thread() {
         public void run() {
             while (!interrupted()) {
                 //System.out.println("Evaluation thread : while loop");
@@ -98,59 +105,15 @@ public class EvaluationEngineService /* implements Runnable */ {
                     //Log.d(TAG, "Defer until: " + deferUntil);
 
                     if (deferUntil <= System.currentTimeMillis()) {
-                        // evaluate now
-                        try {
-                            // evaluation delay is the time in ms between when
-                            // the expression should be evaluated (as indicated
-                            // by deferuntil) and when it is really evaluated.
-                            // Normally the evaluation delay is neglectable, but
-                            // when the load is high, this can become
-                            // significant.
-                            long evaluationDelay;
-                            if (deferUntil != 0) {
-                                evaluationDelay = System.currentTimeMillis()
-                                        - deferUntil;
-                                // code below for debugging purposes
-                                if (evaluationDelay > 3600000) {
-                                    throw new RuntimeException(
-                                            "Weird evaluation delay: "
-                                                    + evaluationDelay + ", "
-                                                    + deferUntil);
-                                }
-                            } else {
-                                evaluationDelay = 0;
-                            }
+                        // Create a worker thread to do the task in parallel
+                        Worker worker = new Worker(head);
+                        executor.submit(worker);
 
-                            long start = System.currentTimeMillis();
-
-                            //System.out.println("mEvaluationThread :Head"+head.getId()+" ---- "+head.getExpression());
-
-                            Result result = mEvaluationManager.evaluate(
-                                    head.getId(), head.getExpression(),
-                                    System.currentTimeMillis());
-
-                            long end = System.currentTimeMillis();
-
-                            long evaluationTime =(end-start);
-                            System.out.println("Evalutation time: "+evaluationTime);
-
-                            // update with statistics: evaluationTime and evaluationDelay
-                            head.evaluated((end - start), evaluationDelay);
-
-                            //System.out.println("mEvaluationThread :Result"+result.toString());
-
-                            if (head.update(result)) {
-                                //System.out.println("mEvaluationThread : before sendUpdate");
-                                //Log.d(TAG, "Result updated: " + result);
-                                sendUpdate(head, result);
-                            }
-                            // re add the expression to the queue
-                            synchronized (mEvaluationThread) {
-                                mEvaluationQueue.remove(head);
-                                mEvaluationQueue.add(head);
-                            }
-                        } catch (SwanException e) {
-                            //Log.d(TAG, "Failed to evaluate", e);
+                        // re add the expression to the queue
+                        synchronized (mEvaluationThread) {
+                            mEvaluationQueue.remove(head);
+                            // No need to add again, it will be added in doNotify whenever there are new values
+//                            mEvaluationQueue.add(head);
                         }
                     } else {
                         synchronized (mEvaluationThread) {
@@ -161,12 +124,12 @@ public class EvaluationEngineService /* implements Runnable */ {
                                                 - System.currentTimeMillis());
                                 // Log.d(TAG, "Waiting for " + waitTime +
                                 // " ms.");
-                                //Log.d(TAG, "Putting evaluation thread on wait for " + waitTime);
+                                //System.out.println("Putting evaluation thread on wait for " + waitTime);
                                 mEvaluationThread.wait(waitTime);
                                 // Log.d(TAG, "Done waiting for " + waitTime
                                 // + " ms.");
                             } catch (InterruptedException e) {
-                                continue;
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -176,6 +139,125 @@ public class EvaluationEngineService /* implements Runnable */ {
     };
 
 
+
+    class Worker extends Thread {
+
+        private QueuedExpression head;
+        private volatile Result result;
+        private String threadName;
+        private volatile boolean terminated = false;
+
+        public Worker(QueuedExpression head) {
+            this.head = head;
+
+            synchronized (threadList) {
+                threadList.add(this);
+            }
+        }
+
+        @Override
+        public void run() {
+            terminated = false;
+            threadName = Thread.currentThread().getName();
+            System.out.println(Thread.currentThread().getName() + " Start");
+
+            doWork();
+            
+            System.out.println(Thread.currentThread().getName() + " End");
+            terminated = true;
+        }
+
+        void doWork() {
+            try {
+                // evaluation delay is the time in ms between when
+                // the expression should be evaluated (as indicated
+                // by deferuntil) and when it is really evaluated.
+                // Normally the evaluation delay is neglectable, but
+                // when the load is high, this can become
+                // significant.
+                long evaluationDelay;
+                long deferUntil = head.getDeferUntil();
+                if (deferUntil != 0) {
+                    evaluationDelay = System.currentTimeMillis()
+                            - deferUntil;
+                    // code below for debugging purposes
+                    if (evaluationDelay > 3600000) {
+                        throw new RuntimeException(
+                                "Weird evaluation delay: "
+                                        + evaluationDelay + ", "
+                                        + deferUntil);
+                    }
+                } else {
+                    evaluationDelay = 0;
+                }
+
+                long start = System.currentTimeMillis();
+                result = mEvaluationManager.evaluate(
+                        head.getId(), head.getExpression(),
+                        System.currentTimeMillis());
+
+                long end = System.currentTimeMillis();
+                long evaluationTime =(end-start);
+                System.out.println("Evaluation time: "+evaluationTime);
+
+                // update with statistics: evaluationTime and evaluationDelay
+                head.evaluated((end - start), evaluationDelay);
+
+            } catch (SwanException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public Result getResult() {
+            return result;
+        }
+
+        public QueuedExpression getHead() {
+            return head;
+        }
+
+        public String getThreadName() {
+            return threadName;
+        }
+
+        public boolean isTerminated() {
+            return terminated;
+        }
+    }
+
+
+
+    private Thread mTerminationThread = new Thread(() -> {
+        while(!interrupted()) {
+            try {
+                Worker thread = null;
+                synchronized (threadList) {
+                    if (!threadList.isEmpty())
+                        thread = threadList.get(0);
+                }
+
+                if (thread != null) {
+                    if (!thread.isTerminated())
+                        continue;
+
+                    Result result = thread.getResult();
+                    QueuedExpression head = thread.getHead();
+                    if (head.update(result)) {
+                        sendUpdate(head, result);
+                    }
+
+                    synchronized (threadList) {
+                        threadList.remove(thread);
+                    }
+
+//                    System.out.println("Terminating thread: " + thread.getThreadName());
+                    System.out.println("DONE: " + thread.getThreadName());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    });
 
     public synchronized void doRegister(final String id, final Expression expression,
                             final boolean onTrue, final boolean onFalse,
