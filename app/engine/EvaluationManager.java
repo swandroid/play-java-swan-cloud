@@ -247,6 +247,8 @@ public class EvaluationManager {
                     expression.getHistoryLength());
 
 
+            System.out.println("Evaluation time (value size):"+values.size());
+
             // TODO if values is empty, should we not just defer until forever?
             // And can values be null at all?
             if (values == null || values.size() == 0) {

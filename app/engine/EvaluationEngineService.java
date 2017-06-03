@@ -82,7 +82,7 @@ public class EvaluationEngineService /* implements Runnable */ {
 
 
     private final List<Worker> threadList = new ArrayList<>();
-    private ExecutorService executor = Executors.newFixedThreadPool(100);
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
 
 
     private Thread mEvaluationThread = new Thread() {

@@ -76,7 +76,7 @@ public class WebSocketController extends Controller {
 
 
 
-    public LegacyWebSocket<String> socket() {
+    public LegacyWebSocket<String> socket2() {
         return WebSocket.whenReady((in, out) -> {
 
             sendDataToPhoneAfterProcessing(out);
@@ -84,6 +84,20 @@ public class WebSocketController extends Controller {
             // For each event received on the socket,
             in.onMessage(msg -> {
                 pushDataForProcessing(msg);
+
+            });
+
+            // Send a single 'Hello!' message
+            out.write("Connected!!");
+        });
+    }
+
+    public LegacyWebSocket<String> socket() {
+        return WebSocket.whenReady((in, out) -> {
+
+            // For each event received on the socket,
+            in.onMessage(msg -> {
+                out.write(msg);
 
             });
 
