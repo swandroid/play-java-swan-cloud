@@ -26,7 +26,7 @@ public class TimestampedValue implements Serializable, //Parcelable,
 	private Object mValue;
 
 	/** The timestamp. */
-	private long mTimestamp;
+	public long mTimestamp;
 
 	/**
 	 * Construct from a parcel.
