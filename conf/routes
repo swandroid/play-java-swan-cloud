@@ -131,3 +131,13 @@ GET    /register/websocket/value                   controllers.SwanController.te
 
 GET    /unregister/websocket/value                  controllers.SwanController.testUnregisterWebSocketValueSwan
 
+
+
+GET     /kea/test/MEAN/   controllers.WebSocketController.computationTest_MEAN
+GET     /kea/test/MEDIAN/   controllers.WebSocketController.computationTest_MEDIAN
+GET     /kea/test/MEAN_ON2/   controllers.WebSocketController.computationTest_MEAN_ON2
+GET     /kea/test/MEAN_ON3/   controllers.WebSocketController.computationTest_MEAN_ON3
+GET     /kea/test/MEAN_PARALLEL/   controllers.WebSocketController.computationTest_MEAN_PARALLEL
+GET     /kea/test/MEAN_ON2_PARALLEL/   controllers.WebSocketController.computationTest_MEAN_ON2_PARALLEL
+GET     /kea/test/MEAN_ON3_PARALLEL/   controllers.WebSocketController.computationTest_MEAN_ON3_PARALLEL
+
