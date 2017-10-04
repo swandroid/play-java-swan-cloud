@@ -246,6 +246,7 @@ public class EvaluationManager {
             List<TimestampedValue> values = mSensors.get(id).getValues(id, now,
                     expression.getHistoryLength());
 
+            System.out.println("Evaluation time (value):"+values.size());
 
             // TODO if values is empty, should we not just defer until forever?
             // And can values be null at all?

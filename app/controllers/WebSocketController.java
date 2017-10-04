@@ -9,6 +9,7 @@ import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.ValueExpression;
+import com.swandroid.keatest.Compute;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.reactivestreams.Publisher;
@@ -29,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static akka.stream.javadsl.Source.actorRef;
+import static com.swandroid.keatest.ComputationType.*;
 
 /**
  * Created by Roshan Bharath Das on 26/05/2017.
@@ -146,6 +148,8 @@ public class WebSocketController extends Controller {
     }
 
 
+
+
   /*public WebSocket socket() {
       return WebSocket.Text.accept(request -> {
 
@@ -161,6 +165,130 @@ public class WebSocketController extends Controller {
           });
       });
   }*/
+
+    public Result computationTest_MEAN(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                    Compute compute = new Compute();
+                    compute.loopMethodTest(1,60001,1000,MEAN);
+                    //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+    public Result computationTest_MEDIAN(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(1,60001,1000,MEDIAN);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+    public Result computationTest_MEAN_ON2(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(1,1001,10,MEAN_ON2);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+    public Result computationTest_MEAN_ON3(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(1,101,5,MEAN_ON3);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+
+    public Result computationTest_MEAN_PARALLEL(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(1001,60001,1000,MEAN_PARALLEL);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+
+    public Result computationTest_MEAN_ON2_PARALLEL(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(11,1001,10,MEAN_ON2_PARALLEL);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+    public Result computationTest_MEAN_ON3_PARALLEL(){
+
+        Thread one = new Thread(){
+            public void run() {
+
+                Compute compute = new Compute();
+                compute.loopMethodTest(11,101,5,MEAN_ON3_PARALLEL);
+                //compute.methodTest(10001, MEAN_ON3);
+
+            }
+
+        };
+        one.start();
+
+        return ok();
+    }
+
+
+
 
 
 }

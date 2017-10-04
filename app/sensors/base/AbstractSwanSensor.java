@@ -45,6 +45,7 @@ public abstract class AbstractSwanSensor implements SensorInterface {
 
 
     public final Map<String, List<TimestampedValue>> getValues() {
+        //System.out.println("value size:"+values.size());
         return values;
     }
 
@@ -58,6 +59,7 @@ public abstract class AbstractSwanSensor implements SensorInterface {
             try {
                 //TODO: Two id's with same valupath and different configuration gives different result. This is not handled currently.
                 getValues().get(valuePath).add(new TimestampedValue(value, now));
+                //System.out.println("value size:"+getValues().get(valuePath).size());
             } catch (OutOfMemoryError e) {
                 onDestroySensor();
             }
@@ -94,7 +96,9 @@ public abstract class AbstractSwanSensor implements SensorInterface {
             }
         } else {
             if (values != null) {
+                //long startTime = System.nanoTime();
                 for (int i = values.size() - 1; i >= 0; i--) {
+                    //System.out.println("Roshnn:"+i+","+now+","+timespan+","+(now-timespan)+","+values.get(i).getTimestamp());
                     if ((now - timespan) <= values.get(i).getTimestamp()) {
                         if (now >= values.get(i).getTimestamp())    //it shouldn't be a future value
                             result.add(values.get(i));
@@ -102,6 +106,8 @@ public abstract class AbstractSwanSensor implements SensorInterface {
                         break;
                     }
                 }
+               //long esttime = System.nanoTime() - startTime;
+                //System.out.println("Roshnn:"+esttime);
             }
         }
 

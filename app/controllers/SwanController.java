@@ -781,7 +781,7 @@ public class SwanController extends Controller{
 
 
         String id = "test1-2345";
-        String myExpression = "self@test:value?delay='1'{MEDIAN,60000}";
+        String myExpression = "self@test:value?delay='2'{MEDIAN,20000}";
         //String myExpression = "self@test:value?delay='5000'$server_storage=FALSE{ANY,5000}";
 
 
