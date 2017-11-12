@@ -141,3 +141,8 @@ GET     /kea/test/MEAN_PARALLEL/   controllers.WebSocketController.computationTe
 GET     /kea/test/MEAN_ON2_PARALLEL/   controllers.WebSocketController.computationTest_MEAN_ON2_PARALLEL
 GET     /kea/test/MEAN_ON3_PARALLEL/   controllers.WebSocketController.computationTest_MEAN_ON3_PARALLEL
 
+
+
+GET    /swan/fogtest/value/register/                  controllers.SwanController.testRegisterFogtestSensor
+GET    /swan/fogtest/value/unregister/                  controllers.SwanController.testUnregisterFogtestSensor
+

@@ -1208,6 +1208,64 @@ public class SwanController extends Controller{
     }
 
 
+
+    public Result testRegisterFogtestSensor(){
+
+        int numberOfExpressions = 2;
+        int startingPortNumber =7784;
+        for(int i=0;i<numberOfExpressions;i++) {
+
+            String id = "fogtest-"+i;
+            String myExpression = "self@fogtest:value"+i+"?port='"+(startingPortNumber+i)+"'$server_storage=FALSE{ANY,1000}";
+            try {
+                ExpressionManager.registerValueExpression(id, (ValueExpression) ExpressionFactory.parse(myExpression), new ValueExpressionListener() {
+                    @Override
+                    public void onNewValues(String id, TimestampedValue[] newValues) {
+                        if (newValues != null && newValues.length > 0) {
+                            System.out.println("Fogtest Sensor (Value):" + newValues[newValues.length - 1].toString());
+                        }
+                    }
+                });
+            } catch (SwanException e) {
+                e.printStackTrace();
+            } catch (ExpressionParseException e) {
+                e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
+            /*try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+
+            System.out.println("done");
+        }
+
+        System.out.println("Called everyone");
+        return ok("Registered");
+    }
+
+
+    public Result testUnregisterFogtestSensor(){
+
+
+        int numberOfExpressions = 2;
+        for(int i=0;i<numberOfExpressions;i++){
+
+        String id = "fogtest-"+i;
+
+        ExpressionManager.unregisterExpression(id);
+
+
+        }
+
+        return ok("Registered");
+    }
+
+
+
     public Result unRegisterExpressionForEmailNotification() {
 
 

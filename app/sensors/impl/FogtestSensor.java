@@ -32,35 +32,46 @@ public class FogtestSensor extends AbstractSwanSensor {
         ServerSocket server;
         Socket socket;
         ObjectInputStream ois;
+        int port;
 
         FogTestPoller(String id, String valuePath, HashMap configuration) {
             super(id, valuePath, configuration);
+
+                port =7784;
+                if(configuration.containsKey("port")){
+                    port = Integer.parseInt((String) configuration.get("port"));
+
+                }
+
+        }
+
+
+        public void run() {
+
             try {
-                server = new ServerSocket(7782);
+                server = new ServerSocket(port);
                 socket = server.accept();
                 ois = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
 
 
-        public void run() {
             while (!isInterrupted()) {
 
                 try {
 
-                    String message = (String) ois.readObject();
+                    //String message = (String) ois.readObject();
 
-                    try {
-                        JSONObject json = new JSONObject(message);
+                    Object o = ois.readObject();
+                    System.out.println("Read object: "+o);
 
-                        updateResult(FogtestSensor.this,json.get("data"),json.getLong("time"));
+                    // JSONObject json = new JSONObject(message);
 
+                    // updateResult(FogtestSensor.this,json.get("data"),json.getLong("time"));
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    updateResult(FogtestSensor.this,(long)(Math.random()*3000),System.currentTimeMillis());
+
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -104,7 +115,7 @@ public class FogtestSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getValuePaths()  {
-        return new String[]{ VALUE};
+        return new String[]{ "value","value0","value1"};
     }
 
     @Override
@@ -114,7 +125,7 @@ public class FogtestSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getConfiguration() {
-        return new String[] {"delay"};
+        return new String[] {"delay","port"};
     }
 
 
