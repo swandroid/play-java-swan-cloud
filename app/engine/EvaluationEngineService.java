@@ -19,8 +19,10 @@ public class EvaluationEngineService /* implements Runnable */ {
 
 
     private static EvaluationEngineService instance = null;
-
-
+    
+    //for the optimization sensors
+    public static ConcurrentHashMap<String,Worker> activeOptimizationThreads = new ConcurrentHashMap<>();
+    
     private EvaluationEngineService(){
 
         mEvaluationManager = new EvaluationManager();
@@ -107,6 +109,15 @@ public class EvaluationEngineService /* implements Runnable */ {
                     if (deferUntil <= System.currentTimeMillis()) {
                         // Create a worker thread to do the task in parallel
                         Worker worker = new Worker(head);
+                        System.out.println("worker head.getId "+head.getId());
+                        if(head.getId().contains("optimization")) {
+//                            System.out.println("it contains optimization");
+                            if(worker!=null)
+                                System.out.println(" worker "+worker+ " "+worker.getThreadName());
+                            activeOptimizationThreads.put(head.getId(), worker);
+                        }
+                        
+                        
                         executor.submit(worker);
 
                         // re add the expression to the queue
@@ -160,11 +171,18 @@ public class EvaluationEngineService /* implements Runnable */ {
             terminated = false;
             threadName = Thread.currentThread().getName();
             System.out.println(Thread.currentThread().getName() + " Start");
-
-            doWork();
+            
+            if(head.getId().contains("optimization"))
+                doOptimizationWork();
+            else
+                doWork();
             
             System.out.println(Thread.currentThread().getName() + " End");
             terminated = true;
+        }
+    
+        void doOptimizationWork() {
+            mEvaluationManager.evaluate(head.getId());
         }
 
         void doWork() {
@@ -241,9 +259,15 @@ public class EvaluationEngineService /* implements Runnable */ {
                         continue;
 
                     Result result = thread.getResult();
-                    QueuedExpression head = thread.getHead();
-                    if (head.update(result)) {
-                        sendUpdate(head, result);
+    
+                    if(result!=null){
+                        QueuedExpression head = thread.getHead();
+                        if (head.update(result)) {
+                            if(!head.getId().contains("optimization")){
+                                sendUpdate(head, result);
+                            }
+                        }
+        
                     }
 
                     synchronized (threadList) {
@@ -422,6 +446,21 @@ public class EvaluationEngineService /* implements Runnable */ {
             } */
         ExpressionManager.receiveUpdate(queued.getId(), update);
 
+    }
+    
+    public synchronized void update(String id) {
+        synchronized (mEvaluationThread) {
+            // add this expression to our registered expression, the queue and
+            // notify the evaluation thread
+//            QueuedExpression queued = new QueuedExpression(id, expression,
+//                    onTrue, onFalse, onUndefined, onNewValues);
+            QueuedExpression queued = new QueuedExpression(id);
+
+//            mRegisteredExpressions.put(id, queued);
+            mEvaluationQueue.add(queued);
+            mEvaluationThread.notify();
+            
+        }
     }
 
 

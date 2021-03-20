@@ -1,10 +1,23 @@
 package engine;
 
+import actuator.SendPhoneResult;
+import controllers.OptimizationController;
 import interdroid.swancore.swansong.*;
+import optimization.algorithm.UserOptimizationData;
+import optimization.algorithm.gmooa.GenericMultiObjectiveAlgorithm;
+import optimization.algorithm.gmooa.GenericMultiObjectiveDirectedAlgorithm;
+import optimization.algortihmsConditions.AlgorithmSettings;
+import optimization.algortihmsConditions.GeneticAlgorithmOption;
+import optimization.algortihmsConditions.OptimizationMethods;
+import optimization.algortihmsConditions.PopulationSizeCalculator;
+import optimization.core.population.Individual;
+import optimization.hibernateModels.Graph;
+import optimization.hibernateModels.Vertex;
 import sensors.base.SensorFactory;
 import sensors.base.SensorInterface;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,7 +352,57 @@ public class EvaluationManager {
         }
         return result;
     }
+    
+    
+    public void evaluate(String id){
+        
+        if (id == null) {
+            throw new RuntimeException("This should not happen! Please debug");
+        }
+        Individual individual = null;
+        UserOptimizationData multiData = OptimizationController.optimizationControllerData.activeUsersData.get(id);
+        HashMap<Integer,Graph> graphMap = OptimizationController.optimizationControllerData.graphMap;
+        PopulationSizeCalculator populationSizeCalculator = new PopulationSizeCalculator();
+        int numberIndividuals = populationSizeCalculator.calculateNumberIndividualsGMOA( multiData.getOptimizationTime() - System.currentTimeMillis(),multiData.getUserSkeletonGraph().getVertexes().size());
 
+        if(AlgorithmSettings.geneticAlgorithmOption == GeneticAlgorithmOption.GENETICMULTIOBJECTIVEALGORITM ){
+            GenericMultiObjectiveAlgorithm genericMultiObjectiveAlgorithm = new GenericMultiObjectiveAlgorithm(multiData.getElitist(),graphMap
+                    , multiData.getIncreaseObjectives(), multiData.getOrigin(), multiData.getDestination(),
+                    new Vertex(String.valueOf(multiData.getOrigin().getCluster()))
+                    , new Vertex(String.valueOf(multiData.getDestination().getCluster())), numberIndividuals,
+                    OptimizationMethods.RANDOM_ACYCLIC_WALK, multiData.getOptimizationTime() , id, new ArrayList<>(OptimizationController.optimizationControllerData.userRoute.get(id)));
+            individual = genericMultiObjectiveAlgorithm.GenericMultiObjectiveAlgorithmRun();
+        }else{
+            GenericMultiObjectiveDirectedAlgorithm genericMultiObjectiveDirectedAlgorithm =  new GenericMultiObjectiveDirectedAlgorithm(multiData.getElitist(),graphMap
+                , multiData.getIncreaseObjectives(),multiData.getOrigin(),multiData.getDestination(),
+                new Vertex(String.valueOf(multiData.getOrigin().getCluster()))
+                ,new Vertex(String.valueOf(multiData.getDestination().getCluster())),numberIndividuals,
+                OptimizationMethods.RANDOM_ACYCLIC_WALK,multiData.getOptimizationTime(),id,new ArrayList<>(OptimizationController.optimizationControllerData.userRoute.get(id)));
+            individual  =genericMultiObjectiveDirectedAlgorithm.GenericMultiObjectiveDirectedAlgorithmRun();
+        }
+        if(individual != null) {
+            OptimizationController.optimizationControllerData.activeUsersData.get(id).setElitist(individual);
+        if(OptimizationController.optimizationControllerData.activeUsersData.get(id).getElitist()==null){
+            multiData.setOptimizationTime(System.currentTimeMillis()+ AlgorithmSettings.minimumAlgorithmRunTime);
+        }
+
+        //firebase message maximum payload is 4KB so we crop the path until 30 nodes.
+        String path = "";
+        int length;
+        if (individual.getPath().size() > 30)
+            length = 30;
+        else length = individual.getPath().size();
+        for (int k = 0; k < length; k++) {
+            path = path + individual.getPath().get(k).getCoordinate().x + "/"
+                           + individual.getPath().get(k).getCoordinate().y + ",";
+        }
+        path = path + individual.getPath().get(individual.getPath().size() - 1).getCoordinate().x + "/"
+                       + individual.getPath().get(individual.getPath().size() - 1).getCoordinate().y;
+        SendPhoneResult sendPhoneResult = new SendPhoneResult();
+        sendPhoneResult.sendUpdateToPhone(id, path);
+        }
+    }
+    
     private boolean leftFirst(String id, LogicExpression expression, long now) {
         // For a binary logic operation it is important to make a clever
         // decision which of the involved expressions is evaluated first.

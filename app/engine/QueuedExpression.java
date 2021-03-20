@@ -36,6 +36,14 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
         mOnUndefined = onUndefined;
         mOnNewValues = onNewValues;
     }
+    
+    public QueuedExpression(String id) {
+        mId = id;
+        mStartTime = System.currentTimeMillis();
+        
+    }
+    
+    
 
     public int compareTo(QueuedExpression another) {
         // mCurrentResult can be null if, for example, a NEARBY expression is registered,

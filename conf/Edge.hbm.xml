@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="optimization.hibernateModels.Edge" table="EDGE">
+        <id name="edge_id" column="edge_id" type="java.lang.String">
+            <generator class="optimization.hibernateModels.hibernateUtils.StringIdGenerator">
+            </generator>
+        </id>
+        <property name="distance" column="distance"  not-null="false" />
+        <property name="middlePoint" column="middlepoint"  />
+        <property name="origin" column="origin"  not-null="true"/>
+
+        <property name="sensor" column="sensor"/>
+
+        <property name="destination" column="destination"  not-null="true"/>
+        <property name="cluster" column="cluster" type="java.lang.Integer" not-null="false" >
+        </property>
+
+    </class>
+</hibernate-mapping>

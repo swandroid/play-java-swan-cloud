@@ -146,3 +146,12 @@ GET     /kea/test/MEAN_ON3_PARALLEL/   controllers.WebSocketController.computati
 GET    /swan/fogtest/value/register/                  controllers.SwanController.testRegisterFogtestSensor
 GET    /swan/fogtest/value/unregister/                  controllers.SwanController.testUnregisterFogtestSensor
 
+POST /swan/navigation/start/                         controllers.OptimizationController.startUserNavigation
+POST /swan/navigation/update/                         controllers.OptimizationController.updateUserInfoNavigation
+POST /swan/navigation/stop/                         controllers.OptimizationController.terminateUserNavigation
+
+
+
+GET /swan/navigation/init/                                                         controllers.OptimizationController.init
+GET /fillDbGraphml/                                                           controllers.OptimizationController.fillDatabaseFromGraphMl
+

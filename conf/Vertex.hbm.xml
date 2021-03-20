@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="optimization.hibernateModels.Vertex" table="VERTEX">
+        <id name="vertex_id" column="vertex_id" type="java.lang.String">
+            <generator class="optimization.hibernateModels.hibernateUtils.StringIdGenerator">
+            </generator>
+        </id>
+        <property name="location" column="location"  >
+
+        </property>
+        <property name="coordinate" column="coordinate"  >
+        </property>
+
+        <property name="cluster" column="cluster" type="java.lang.Integer" not-null="false" >
+        </property>
+
+    </class>
+</hibernate-mapping>

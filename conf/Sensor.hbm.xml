@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="optimization.hibernateModels.Sensor" table="SENSOR">
+        <id name="sensor_id" column="sensor_id" type="java.lang.String">
+            <generator class="optimization.hibernateModels.hibernateUtils.StringIdGenerator">
+            </generator>
+        </id>
+
+        <property name="sensorUrl" column="sensor_url"  />
+        <property name="sensorType" column="sensor_Type"  />
+
+</class>
+</hibernate-mapping>

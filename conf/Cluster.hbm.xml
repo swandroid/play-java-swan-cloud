@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="optimization.hibernateModels.Cluster" table="CLUSTER">
+        <id name="cluster_id" column="cluster_id" type="java.lang.String">
+            <generator class="optimization.hibernateModels.hibernateUtils.StringIdGenerator">
+            </generator>
+        </id>
+        <set name="clusterSensors" table="CLUSTERSENSORS">
+            <key column="cluster_id"/>
+            <element column="sensor" type="string"/>
+        </set>
+        <property name="east" column="east"></property>
+        <property name="west" column="west"></property>
+        <property name="north" column="north"></property>
+        <property name="south" column="south"></property>
+    </class>
+</hibernate-mapping>

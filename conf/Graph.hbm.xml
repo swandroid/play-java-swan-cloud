@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="optimization.hibernateModels.Graph" table="GRAPH">
+        <id name="graph_id" column="graph_id" type="java.lang.String">
+            <generator class="optimization.hibernateModels.hibernateUtils.StringIdGenerator">
+            </generator>
+        </id>
+        <set name="vertexes" >
+            <key column="graph_id"  />
+            <one-to-many class="optimization.hibernateModels.Vertex" />
+        </set>
+
+        <set name="edges">
+            <key column="graph_id"  />
+            <one-to-many class="optimization.hibernateModels.Edge" />
+        </set>
+
+    </class>
+</hibernate-mapping>

@@ -302,5 +302,11 @@ public class ExpressionManager {
         evaluationEngineService.doUnregister(id);
 
     }
+    
+    public static void notifyForUpdate(String id){
+        
+        evaluationEngineService.update(id);
+        
+    }
 
 }
