@@ -1,2 +1,184 @@
 This is the SWAN framework built using play framework.
 For more information about this repository, please contact: Roshan Bharath Das (http://few.vu.nl/~rbs238/)
+
+
+The file includes instructions for the creation and preparation of the data as well as a use guide for personalized user navigation in a dynamic environment.
+
+1. CREATE POSTGRES DATABASE
+
+	create database navigationdb;
+	sudo su postgres
+	psql
+	create database databasename;
+
+
+2. GRANT all privileges ON DATABASE navigationdb TO postgres;
+
+3. in the file hibernate.cfg.xml add the database
+
+	e.g jdbc:postgresql://localhost:5432/databasename
+
+	add the username and pwd
+
+4. in the file hibernate.cfg.xml
+	set create in
+	<property name="hibernate.hbm2ddl.auto">create</property>
+
+	after sending the first init request change the create to update!!
+
+	<property name="hibernate.hbm2ddl.auto">update</property>
+
+
+5. DOWNLOAD THE GRAPH FILE
+
+6. Run the below python script after replacing the city, country and the network_type (walk,drive). The graph is stored in the filename ‘city.graphml’
+
+	Import osmnx as ox, geopandas as gpd
+	ox.config(log_file=True, log_console=True, use_cache=True)
+	G = ox.graph_from_place('Amsterdam, Netherlands', network_type='walk')
+	#ox.plot_graph(G)
+	Gsave = ox.save_load.get_undirected(G)
+	Graphmlfile = ox.save_load.save_graphml(G, filename='city.graphml', folder='folder', gephi=True)
+
+
+7. FILL THE DATABASE
+
+In the ClusterCreator object set the BASE_FOLDER = "" the location of the file city.graphml.
+
+
+8. CLUSTER VERTEXES
+
+Set the base folder and run the below python script. The VertexFile.csv is the one created from the previous step which contains the osmid, lat , lon of each vertex stored in the database.
+
+    from sklearn.cluster import KMeans
+    import numpy as np
+    import csv
+    from matplotlib import pyplot
+    import os
+    import errno
+    import pandas as pd, numpy as np, matplotlib.pyplot as plt
+
+    baseFolder = ''
+    df = pd.read_csv(baseFolder+'VertexFile.csv')
+    X = df.as_matrix(columns=['lat', 'lon'])
+    Y = df.as_matrix(columns=['osmid'])
+    k=8;
+    kmeans = KMeans(n_clusters=8).fit(X)
+    labels = kmeans.labels_
+    centroids = kmeans.cluster_centers_
+
+    for i in range(k):
+            # select only data observations with cluster label == i
+        ds = X[np.where(labels==i)]
+            # plot the data observations
+        pyplot.plot(ds[:,0],ds[:,1],'o')
+            # plot the centroids
+        lines = pyplot.plot(centroids[i,0],centroids[i,1],'kx')
+            # make the centroid x's bigger
+        pyplot.setp(lines,ms=15.0)
+        pyplot.setp(lines,mew=2.0)
+
+    pyplot.show()
+    print(set(kmeans.labels_))
+
+    np.savetxt(baseFolder+'file.csv', kmeans.labels_,fmt='%d', delimiter=',')
+    np.savetxt(baseFolder+'Xfile.csv', X, fmt='%f', delimiter=',')
+    np.savetxt(baseFolder+'Yfile.csv', Y,fmt='%s')
+    with open(baseFolder+'Zfile.csv', 'w') as file3:
+         with open(baseFolder+'file.csv', 'r') as file1:
+            with open(baseFolder+'Xfile.csv', 'r') as file2:
+                for line1, line2 in zip(file1, file2):
+                    print(line1.strip(),',', line2.strip(), file=file3)
+    with open(baseFolder+'finalFile.csv', 'w') as file6:
+         with open(baseFolder+'Zfile.csv', 'r') as file4:
+            with open(baseFolder+'Yfile.csv', 'r') as file5:
+                for line1, line2 in zip(file4, file5):
+                    print(line1.strip(),',', line2.strip(), file=file6)
+
+
+
+The createVertexClusterFile (ClusterCreator)  method creates a a file that will be used in the below python script to cluster the vertexes of the city based on their coordinates.
+
+That results in the creation of the finalFile.csv which includes for each vertex the assigned cluster. After this step we update the database with the new cluster of the vertexes.
+
+9. UPDATE VERTEXES AND EDGES CLUSTERS
+
+run the method cvsParserUpdateCluster which takes an argument, the finalFile.csv. Set the location of the file.
+
+
+10. CORRECT CLUSTERS
+
+After filling the database the path for each vertex inside the cluster is not guaranteed. The method correctClusters of the ClusterCreator class is performing  addresses that issue.
+
+
+Before using the framework
+
+1. For adding a new objective to the framework, a sensor needs to be created that extends the AbstractSwanSensor (check AirSensor). We consider a sensor per edge. For creating a navigation path, the involved sensors are updating the values of the dynamicSensorValues in OptimizationControllerData. The new objective should be added to the method initiallizeSensorValues() in the OptimizationController.
+
+The methods createStaticValues and createDynamicValues read files and update the sensor values
+dynamicSensorValues in OptimizationControllerData. Every objective requires a file.
+
+
+
+Above the first number is the edge id and the rest 4 the different values.
+
+2. In AlgorithmSettings file
+
+	a. add the weight for the new objective
+	b. adjust the rest of the static variables
+
+3. If there is a new objective it needs to be added to the fitness/FitnessMap
+
+4. Change the values in PopulationSizeCalculator based on the time for the creation of a single individual in the specific clustering
+
+
+
+By sending the request:  GET /swan/navigation/init/
+the framework loads all the necessary information required from the navigation algorithm.
+
+The request to start the user navigation is: a POST request to swan/navigation/start
+
+{
+"id":"useroptimization",
+"token":"",
+"expression":"cloud@optimization",
+"sensors":"sound/false+air/false+distance/false",
+"originLatitude":53.3341113,
+"originLongitude":-6.27482 ,
+"destinationLatitude":53.3968172,
+"destinationLongitude":-6.3045752,
+"deadline":200000
+}
+
+The expression in any case is cloud@optimization.
+The token is the Firebase token from the mobile app which is unique.
+The sensors require the sensor name followed by false in f the user in interested in finding a navigation path that minimizes the objective value and true either wise. The originLatitude, originLongtitude refer to the origin coordinates while the destinationLatitude , destinationLongitude to the destination ones.
+
+
+To update the user location a POST request is send to swan/navigation/update/
+
+
+{"id":"useroptimization",
+"token":"",
+"expression":"cloud@optimization",
+"sensors":"sound/false+air/false+distance/false",
+"originLatitude":53.3341762,
+"originLongitude":-6.2747841,
+"destinationLatitude":53.3968172,
+"destinationLongitude":-6.3045752,
+"deadline":10000
+}
+
+
+To terminate the navigation for the user a POST request is send to swan/navigation/stop/
+
+{
+"id":"useroptimization",
+"token":""
+}
+
+
+
+
+
+
